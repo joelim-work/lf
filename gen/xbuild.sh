@@ -18,7 +18,7 @@ ret=0
 build() {
     # https://golang.org/doc/install/source#environment
     if ! CGO_ENABLED=0 GOOS=$1 GOARCH=$2 go build -ldflags="-s -w -X main.gVersion=$version"; then
-        echo "$4 failed to build for GOOS=$1 GOARCH=$2."
+        echo "::error $4 failed to build for GOOS=$1 GOARCH=$2."
         ret=1
         return
     fi
@@ -27,7 +27,7 @@ build() {
         *.tar.gz) tar czf dist/"$3" "$4" --remove-files;;
         *.zip) zip dist/"$3" "$4" --move;;
     esac
-    echo "dist/$3 successfully created."
+    echo "::notice dist/$3 successfully created."
 }
 
 build android   arm64    lf-android-arm64.tar.gz   lf
