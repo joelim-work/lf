@@ -16,6 +16,9 @@ rm -rf dist && mkdir dist
 ret=0
 
 build() {
+    echo "::group::My title"
+    echo "Inside group"
+    echo "::endgroup::"
     # https://golang.org/doc/install/source#environment
     if ! CGO_ENABLED=0 GOOS=$1 GOARCH=$2 go build -ldflags="-s -w -X main.gVersion=$version"; then
         echo "::error $4 failed to build for GOOS=$1 GOARCH=$2."
@@ -30,35 +33,35 @@ build() {
     echo "::notice dist/$3 successfully created."
 }
 
-build android   arm64    lf-android-arm64.tar.gz   lf
-build darwin    amd64    lf-darwin-amd64.tar.gz    lf
-build dragonfly amd64    lf-dragonfly-amd64.tar.gz lf
-build freebsd   386      lf-freebsd-386.tar.gz     lf
-build freebsd   amd64    lf-freebsd-amd64.tar.gz   lf
-build freebsd   arm      lf-freebsd-arm.tar.gz     lf
-build illumos   amd64    lf-illumos-amd64.tar.gz   lf
+# build android   arm64    lf-android-arm64.tar.gz   lf
+# build darwin    amd64    lf-darwin-amd64.tar.gz    lf
+# build dragonfly amd64    lf-dragonfly-amd64.tar.gz lf
+# build freebsd   386      lf-freebsd-386.tar.gz     lf
+# build freebsd   amd64    lf-freebsd-amd64.tar.gz   lf
+# build freebsd   arm      lf-freebsd-arm.tar.gz     lf
+# build illumos   amd64    lf-illumos-amd64.tar.gz   lf
 build linux     386      lf-linux-386.tar.gz       lf
 build linux     amd64    lf-linux-amd64.tar.gz     lf
-build linux     arm      lf-linux-arm.tar.gz       lf
-build linux     arm64    lf-linux-arm64.tar.gz     lf
-build linux     ppc64    lf-linux-ppc64.tar.gz     lf
-build linux     ppc64le  lf-linux-ppc64le.tar.gz   lf
-build linux     mips     lf-linux-mips.tar.gz      lf
-build linux     mipsle   lf-linux-mipsle.tar.gz    lf
-build linux     mips64   lf-linux-mips64.tar.gz    lf
-build linux     mips64le lf-linux-mips64le.tar.gz  lf
-build linux     s390x    lf-linux-s390x.tar.gz     lf
-build netbsd    386      lf-netbsd-386.tar.gz      lf
-build netbsd    amd64    lf-netbsd-amd64.tar.gz    lf
-build netbsd    arm      lf-netbsd-arm.tar.gz      lf
-build openbsd   386      lf-openbsd-386.tar.gz     lf
-build openbsd   amd64    lf-openbsd-amd64.tar.gz   lf
-build openbsd   arm      lf-openbsd-arm.tar.gz     lf
-build openbsd   arm64    lf-openbsd-arm64.tar.gz   lf
-build solaris   amd64    lf-solaris-amd64.tar.gz   lf
+# build linux     arm      lf-linux-arm.tar.gz       lf
+# build linux     arm64    lf-linux-arm64.tar.gz     lf
+# build linux     ppc64    lf-linux-ppc64.tar.gz     lf
+# build linux     ppc64le  lf-linux-ppc64le.tar.gz   lf
+# build linux     mips     lf-linux-mips.tar.gz      lf
+# build linux     mipsle   lf-linux-mipsle.tar.gz    lf
+# build linux     mips64   lf-linux-mips64.tar.gz    lf
+# build linux     mips64le lf-linux-mips64le.tar.gz  lf
+# build linux     s390x    lf-linux-s390x.tar.gz     lf
+# build netbsd    386      lf-netbsd-386.tar.gz      lf
+# build netbsd    amd64    lf-netbsd-amd64.tar.gz    lf
+# build netbsd    arm      lf-netbsd-arm.tar.gz      lf
+# build openbsd   386      lf-openbsd-386.tar.gz     lf
+# build openbsd   amd64    lf-openbsd-amd64.tar.gz   lf
+# build openbsd   arm      lf-openbsd-arm.tar.gz     lf
+# build openbsd   arm64    lf-openbsd-arm64.tar.gz   lf
+# build solaris   amd64    lf-solaris-amd64.tar.gz   lf
 
-build windows   386      lf-windows-386.zip        lf.exe
-build windows   amd64    lf-windows-amd64.zip      lf.exe
+# build windows   386      lf-windows-386.zip        lf.exe
+# build windows   amd64    lf-windows-amd64.zip      lf.exe
 
 # not supported
 # build aix       ppc64    lf-aix-ppc64.tar.gz       lf
