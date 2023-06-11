@@ -16,12 +16,10 @@ rm -rf dist && mkdir dist
 ret=0
 
 build() {
-    echo "::group::My title"
-    echo "Inside group"
-    echo "::endgroup::"
+    echo "::group::Building for GOOS=$1 GOARCH=$2"
     # https://golang.org/doc/install/source#environment
     if ! CGO_ENABLED=0 GOOS=$1 GOARCH=$2 go build -ldflags="-s -w -X main.gVersion=$version"; then
-        echo "::error $4 failed to build for GOOS=$1 GOARCH=$2."
+        echo "::error::$4 failed to build for GOOS=$1 GOARCH=$2"
         ret=1
         return
     fi
@@ -30,7 +28,8 @@ build() {
         *.tar.gz) tar czf dist/"$3" "$4" --remove-files;;
         *.zip) zip dist/"$3" "$4" --move;;
     esac
-    echo "::notice dist/$3 successfully created."
+    echo "::notice::dist/$3 successfully created"
+    echo "::endgroup::"
 }
 
 # build android   arm64    lf-android-arm64.tar.gz   lf
