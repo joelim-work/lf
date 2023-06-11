@@ -49,7 +49,8 @@ jobs:
     - name: Cross-compile on all supported platforms
       run: gen/xbuild.sh
 
-    - name: Upload artifacts
+    - if: ${{ always() }}
+      name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
         name: my-artifact
