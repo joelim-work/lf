@@ -8,7 +8,7 @@
 # compressed in an archive form (`.zip` for windows and `.tar.gz` for the rest)
 # within a folder named `dist`.
 
-[ -z $version ] && version=$(git describe --tags)
+[ -z "$version" ] && version=$(git describe --tags)
 
 rm -f lf lf.exe
 rm -rf dist && mkdir dist
@@ -24,8 +24,8 @@ build() {
     fi
 
     case $3 in
-        *.tar.gz) tar czf dist/$3 $4 --remove-files;;
-        *.zip) zip dist/$3 $4 --move;;
+        *.tar.gz) tar czf dist/"$3" "$4" --remove-files;;
+        *.zip) zip dist/"$3" "$4" --move;;
     esac
     echo "dist/$3 successfully created."
 }
