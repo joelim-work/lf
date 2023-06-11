@@ -34,6 +34,21 @@ jobs:
         version: "2022.1.3"
         install-go: false
 
+  cross-compile:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 1
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: 1.18
+
+    - name: Cross-compile on all supported platforms
+      run: gen/xbuild.sh
+
   generate:
     runs-on: ubuntu-latest
     steps:
@@ -48,4 +63,3 @@ jobs:
 
     - name: Test `go fmt && go generate` on Go 1.19 creates no diffs
       run: go fmt && go generate && git diff --exit-code
-
