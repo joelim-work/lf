@@ -49,13 +49,6 @@ jobs:
     - name: Cross-compile on all supported platforms
       run: gen/xbuild.sh
 
-    - if: ${{ always() }}
-      name: Upload artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: my-artifact
-        path: dist/*
-
   generate:
     runs-on: ubuntu-latest
     steps:
