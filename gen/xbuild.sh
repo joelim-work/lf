@@ -16,6 +16,8 @@ rm -rf dist && mkdir dist
 ret=0
 
 build() {
+    echo "Building for GOOS=$1 GOARCH=$2."
+
     # https://golang.org/doc/install/source#environment
     if ! CGO_ENABLED=0 GOOS=$1 GOARCH=$2 go build -ldflags="-s -w -X main.gVersion=$version"; then
         echo "$4 failed to build for GOOS=$1 GOARCH=$2."
