@@ -9,7 +9,6 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
-	"time"
 	"unicode"
 	"unicode/utf8"
 
@@ -299,13 +298,6 @@ func (e *setExpr) eval(app *app, args []string) {
 		if n < 0 {
 			app.ui.echoerr("period: value should be a non-negative number")
 			return
-		}
-		gOpts.period = n
-		if n == 0 {
-			app.ticker.Stop()
-		} else {
-			app.ticker.Stop()
-			app.ticker = time.NewTicker(time.Duration(gOpts.period) * time.Second)
 		}
 	case "previewer":
 		gOpts.previewer = replaceTilde(e.val)
