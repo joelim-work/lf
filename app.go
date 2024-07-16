@@ -293,6 +293,8 @@ func (app *app) loop() {
 	app.nav.addJumpList()
 	app.nav.init = true
 
+	app.ui.exprChan <- &setExpr{"watch", "true"}
+
 	if gSelect != "" {
 		go func() {
 			lstat, err := os.Lstat(gSelect)
