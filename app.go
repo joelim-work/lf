@@ -294,6 +294,7 @@ func (app *app) loop() {
 	app.nav.init = true
 
 	app.ui.exprChan <- &setExpr{"watch", "true"}
+	app.ui.exprChan <- &setExpr{"showbinds", "false"}
 
 	if gSelect != "" {
 		go func() {
