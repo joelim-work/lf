@@ -59,7 +59,10 @@ func (sxs *sixelScreen) printSixel(win *win, screen tcell.Screen, reg *reg) {
 	iw, _ := strconv.Atoi(matches[1])
 	ih, _ := strconv.Atoi(matches[2])
 
-	screen.LockRegion(win.x, win.y, iw/cw, ih/ch, true)
+	// subtract 1 from width and height for lock region, otherwise cells at the
+	// edge containing partial sixel content will not be cleared of its previous
+	// contents
+	screen.LockRegion(win.x, win.y, iw/cw-1, ih/ch-1, true)
 	ti.TPuts(tty, ti.TGoto(win.x, win.y))
 	ti.TPuts(tty, *reg.sixel)
 
