@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/gdamore/tcell/v2"
 )
@@ -59,12 +60,15 @@ func (sxs *sixelScreen) printSixel(win *win, screen tcell.Screen, reg *reg) {
 	iw, _ := strconv.Atoi(matches[1])
 	ih, _ := strconv.Atoi(matches[2])
 
-	// subtract 1 from width and height for lock region, otherwise cells at the
-	// edge containing partial sixel content will not be cleared of its previous
-	// contents
-	screen.LockRegion(win.x, win.y, iw/cw-1, ih/ch-1, true)
-	ti.TPuts(tty, ti.TGoto(win.x, win.y))
-	ti.TPuts(tty, *reg.sixel)
+	// clear sixel area first before drawing the image to prevent residue from
+	// the previous preview
+	s := ""
+	for y := win.y; y < win.y+ih/ch; y++ {
+		s += ti.TGoto(win.x, y) + strings.Repeat(" ", iw/cw)
+	}
+	s += ti.TGoto(win.x, win.y) + *reg.sixel
+	screen.LockRegion(win.x, win.y, iw/cw, ih/ch, true)
+	ti.TPuts(tty, s)
 
 	sxs.lastFile = reg.path
 	sxs.lastWin = *win
