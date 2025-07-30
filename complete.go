@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"maps"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -158,6 +159,59 @@ func getLocalOptWords(localOpts any) (localOptWords []string) {
 	sort.Strings(localOptWords)
 	return
 }
+
+func commonPrefix(s1, s2 string) string {
+	r1 := []rune(s1)
+	r2 := []rune(s2)
+
+	i := 0
+	for ; i < len(r1) && i < len(r2); i++ {
+		if r1[i] != r2[i] {
+			break
+		}
+	}
+
+	return string(r1[:i])
+}
+
+type compMatch struct {
+	name   string
+	result string
+}
+
+func matchWord2(s string, words []string) (matches []compMatch, result string) {
+	for _, w := range words {
+		if !strings.HasPrefix(w, s) {
+			continue
+		}
+
+		if len(matches) == 0 {
+			result = w
+		} else {
+			result = commonPrefix(result, w)
+		}
+
+		matches = append(matches, compMatch{w, w})
+	}
+
+	switch len(matches) {
+	case 0:
+		result = s
+	case 1:
+		result = result + " "
+	}
+
+	return
+}
+
+func matchCmd2(s string) (matches []compMatch, result string) {
+	words := append(gCmdWords, slices.Collect(maps.Keys(gOpts.cmds))...)
+	slices.Sort(words)
+	matches, result = matchWord2(s, slices.Compact(words))
+	return
+}
+
+////////////////////////////////////////////////////////////////////////////////
 
 func matchLongest(s1, s2 []rune) []rune {
 	i := 0
