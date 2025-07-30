@@ -211,6 +211,39 @@ func matchCmd2(s string) (matches []compMatch, result string) {
 	return
 }
 
+func matchFile2(s string) (matches []compMatch, result string) {
+	dir, file := filepath.Split(unescape(replaceTilde(s)))
+	// todo handle relative path
+
+	files, err := os.ReadDir(dir)
+	if err != nil {
+		log.Printf("reading directory: %s", err)
+		return
+	}
+
+	for _, f := range files {
+		if !strings.HasPrefix(strings.ToLower(f.Name()), strings.ToLower(file)) {
+			continue
+		}
+
+		name := f.Name()
+		if f.IsDir() {
+			name += string(filepath.Separator)
+		}
+
+		result := filepath.Join(dir, name)
+		matches = append(matches, compMatch{name, result})
+	}
+
+	switch len(matches) {
+	case 0:
+		result = s
+	case 1:
+		result = result + " "
+	}
+	return
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 func matchLongest(s1, s2 []rune) []rune {
