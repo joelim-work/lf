@@ -199,7 +199,6 @@ func matchWord2(s string, words []string) (matches []compMatch, result string) {
 	case 1:
 		result = result + " "
 	}
-
 	return
 }
 
@@ -234,6 +233,10 @@ func matchFile2(s string) (matches []compMatch, result string) {
 		name := f.Name()
 		if f.IsDir() {
 			name += string(filepath.Separator)
+		} else if f.Type()&os.ModeSymlink != 0 {
+			if stat, err := os.Stat(filepath.Join(d, f.Name())); err == nil && stat.IsDir() {
+				name += string(filepath.Separator)
+			}
 		}
 		result := escape(dir + name)
 		matches = append(matches, compMatch{name, result})
