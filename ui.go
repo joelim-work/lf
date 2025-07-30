@@ -658,7 +658,6 @@ type ui struct {
 	cmdAccLeft  []rune
 	cmdAccRight []rune
 	cmdYankBuf  []rune
-	cmdTmp      []rune
 	keyAcc      []rune
 	keyCount    []rune
 	styles      styleMap

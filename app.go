@@ -31,6 +31,7 @@ type app struct {
 	cmdHistoryBeg  int
 	cmdHistoryInd  int
 	menuCompActive bool
+	menuCompTmp    []string
 	menuComps      []compMatch
 	menuCompInd    int
 	selectionOut   []string
@@ -683,6 +684,7 @@ func (app *app) doComplete() (matches []compMatch) {
 
 func (app *app) menuComplete(dir int) {
 	if !app.menuCompActive {
+		app.menuCompTmp = tokenize(string(app.ui.cmdAccLeft))
 		app.menuComps = app.doComplete()
 		if len(app.menuComps) > 1 {
 			app.menuCompInd = -1
@@ -696,9 +698,8 @@ func (app *app) menuComplete(dir int) {
 			app.menuCompInd = len(app.menuComps) - 1
 		}
 
-		toks := tokenize(string(app.ui.cmdAccLeft))
-		toks[len(toks)-1] = app.menuComps[app.menuCompInd].result
-		app.ui.cmdAccLeft = []rune(strings.Join(toks, " "))
+		app.menuCompTmp[len(app.menuCompTmp)-1] = app.menuComps[app.menuCompInd].result
+		app.ui.cmdAccLeft = []rune(strings.Join(app.menuCompTmp, " "))
 	}
 	app.ui.menu = listMatches(app.ui.screen, app.menuComps, app.menuCompInd)
 }
