@@ -202,6 +202,40 @@ func matchWord(s string, words []string) (matches []compMatch, result string) {
 	return
 }
 
+func matchList(s string, words []string) (matches []compMatch, result string) {
+	toks := strings.Split(s, ":")
+
+	var longest string
+
+	for _, w := range words {
+		if slices.Contains(toks[:len(toks)-1], w) || !strings.HasPrefix(w, toks[len(toks)-1]) {
+			continue
+		}
+
+		result := strings.Join(append(slices.Clone(toks[:len(toks)-1]), w), ":")
+		matches = append(matches, compMatch{w, result})
+
+		if len(matches) == 1 {
+			longest = result
+		} else {
+			longest = commonPrefix(longest, result)
+		}
+	}
+
+	switch len(matches) {
+	case 0:
+		result = s
+	case 1:
+		result = longest
+		if result == s {
+			result += " "
+		}
+	default:
+		result = longest
+	}
+	return
+}
+
 func matchCmd(s string) (matches []compMatch, result string) {
 	words := append(gCmdWords, slices.Collect(maps.Keys(gOpts.cmds))...)
 	slices.Sort(words)
@@ -345,6 +379,10 @@ func completeCmd(acc []rune) (matches []compMatch, result string) {
 		switch f[1] {
 		case "filtermethod", "searchmethod":
 			matches, result = matchWord(f[2], []string{"glob", "regex", "text"})
+		case "info":
+			matches, result = matchList(f[2], []string{"atime", "btime", "ctime", "custom", "group", "perm", "size", "time", "user"})
+		case "preserve":
+			matches, result = matchList(f[2], []string{"mode", "timestamps"})
 		case "selmode":
 			matches, result = matchWord(f[2], []string{"all", "dir"})
 		case "sortby":
@@ -367,6 +405,8 @@ func completeCmd(acc []rune) (matches []compMatch, result string) {
 			break
 		}
 		switch f[2] {
+		case "info":
+			matches, result = matchList(f[3], []string{"atime", "btime", "ctime", "custom", "group", "perm", "size", "time", "user"})
 		case "sortby":
 			matches, result = matchWord(f[3], []string{"atime", "btime", "ctime", "custom", "ext", "name", "natural", "size", "time"})
 		default:

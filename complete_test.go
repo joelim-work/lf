@@ -92,3 +92,39 @@ func TestMatchWord(t *testing.T) {
 		}
 	}
 }
+
+func TestMatchList(t *testing.T) {
+	tests := []struct {
+		s       string
+		words   []string
+		matches []compMatch
+		result  string
+	}{
+		{"", nil, nil, ""},
+		{"", []string{"foo", "bar", "baz"}, []compMatch{{"foo", "foo"}, {"bar", "bar"}, {"baz", "baz"}}, ""},
+		{"f", []string{"bar", "baz"}, nil, "f"},
+		{"f", []string{"foo", "bar", "baz"}, []compMatch{{"foo", "foo"}}, "foo"},
+		{"b", []string{"foo", "bar", "baz"}, []compMatch{{"bar", "bar"}, {"baz", "baz"}}, "ba"},
+		{"ba", []string{"foo", "bar", "baz"}, []compMatch{{"bar", "bar"}, {"baz", "baz"}}, "ba"},
+		{"foo", []string{"foo", "bar", "baz"}, []compMatch{{"foo", "foo"}}, "foo "},
+		{"foo:", []string{"foo", "bar", "baz"}, []compMatch{{"bar", "foo:bar"}, {"baz", "foo:baz"}}, "foo:ba"},
+		{"foo:f", []string{"foo", "bar", "baz"}, nil, "foo:f"},
+		{"foo:b", []string{"foo", "bar", "baz"}, []compMatch{{"bar", "foo:bar"}, {"baz", "foo:baz"}}, "foo:ba"},
+		{"foo:ba", []string{"foo", "bar", "baz"}, []compMatch{{"bar", "foo:bar"}, {"baz", "foo:baz"}}, "foo:ba"},
+		{"bar:b", []string{"foo", "bar", "baz"}, []compMatch{{"baz", "bar:baz"}}, "bar:baz"},
+		{"bar:f", []string{"foo", "bar", "baz"}, []compMatch{{"foo", "bar:foo"}}, "bar:foo"},
+		{"bar:foo", []string{"foo", "bar", "baz"}, []compMatch{{"foo", "bar:foo"}}, "bar:foo "},
+	}
+
+	for _, test := range tests {
+		matches, result := matchList(test.s, test.words)
+
+		if !reflect.DeepEqual(matches, test.matches) {
+			t.Errorf("at input '%s' with '%s' expected '%v' but got '%v'", test.s, test.words, test.matches, matches)
+		}
+
+		if result != test.result {
+			t.Errorf("at input '%s' with '%s' expected '%s' but got '%s'", test.s, test.words, test.result, result)
+		}
+	}
+}
