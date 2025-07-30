@@ -243,7 +243,7 @@ func matchCmd(s string) (matches []compMatch, result string) {
 	return
 }
 
-func matchFile(s string) (matches []compMatch, result string) {
+func matchFile(s string, escape func(string) string, unescape func(string) string) (matches []compMatch, result string) {
 	dir, file := filepath.Split(unescape(replaceTilde(s)))
 
 	d := dir
@@ -293,6 +293,16 @@ func matchFile(s string) (matches []compMatch, result string) {
 	default:
 		result = escape(dir + longest)
 	}
+	return
+}
+
+func matchCmdFile(s string) (matches []compMatch, result string) {
+	matches, result = matchFile(s, cmdEscape, cmdUnescape)
+	return
+}
+
+func matchShellFile(s string) (matches []compMatch, result string) {
+	matches, result = matchFile(s, shellEscape, shellUnescape)
 	return
 }
 
@@ -394,7 +404,7 @@ func completeCmd(acc []rune) (matches []compMatch, result string) {
 		}
 	case "setlocal":
 		if len(f) == 2 {
-			matches, result = matchFile(f[1])
+			matches, result = matchCmdFile(f[1])
 			break
 		}
 		if len(f) == 3 {
@@ -420,14 +430,14 @@ func completeCmd(acc []rune) (matches []compMatch, result string) {
 		}
 	case "cmd":
 	case "toggle":
-		matches, result = matchFile(f[len(f)-1])
+		matches, result = matchCmdFile(f[len(f)-1])
 	case "cd", "select", "source":
 		if len(f) == 2 {
-			matches, result = matchFile(f[1])
+			matches, result = matchCmdFile(f[1])
 		}
 	default:
 		if !slices.Contains(gCmdWords, f[0]) {
-			matches, result = matchFile(f[len(f)-1])
+			matches, result = matchCmdFile(f[len(f)-1])
 		}
 	}
 
@@ -443,7 +453,7 @@ func completeShell(acc []rune) (matches []compMatch, result string) {
 	case 1:
 		matches, result = matchExec(f[0])
 	default:
-		matches, result = matchFile(f[len(f)-1])
+		matches, result = matchShellFile(f[len(f)-1])
 	}
 
 	f[len(f)-1] = result
