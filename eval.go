@@ -1899,8 +1899,7 @@ func (e *callExpr) eval(app *app, args []string) {
 		}
 		normal(app)
 	case "cmd-complete":
-		matches := doComplete(app)
-		app.ui.menu = listMatches(app.ui.screen, matches, -1)
+		app.doComplete()
 	case "cmd-menu-complete":
 		menuComplete(app, 1)
 	case "cmd-menu-complete-back":

@@ -664,6 +664,19 @@ func (app *app) runShell(s string, args []string, prefix string) {
 	}
 }
 
+func (app *app) doComplete() {
+	var matches []compMatch
+	var result string
+
+	switch app.ui.cmdPrefix {
+	case ":":
+		matches, result = completeCmd2(app.ui.cmdAccLeft)
+	}
+
+	app.ui.cmdAccLeft = []rune(result)
+	app.ui.menu = listMatches2(app.ui.screen, matches, -1)
+}
+
 func (app *app) watchDir(dir *dir) {
 	if !gOpts.watch {
 		return

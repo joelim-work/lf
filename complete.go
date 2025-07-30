@@ -244,6 +244,78 @@ func matchFile2(s string) (matches []compMatch, result string) {
 	return
 }
 
+func completeCmd2(acc []rune) (matches []compMatch, result string) {
+	s := string(acc)
+	f := tokenize(s)
+
+	if len(f) == 1 {
+		matches, result = matchCmd2(s)
+		return
+	}
+
+	switch f[0] {
+	case "set":
+		if len(f) == 2 {
+			matches, result = matchWord2(f[1], gOptWords)
+			break
+		}
+		if len(f) != 3 {
+			break
+		}
+		switch f[1] {
+		case "filtermethod", "searchmethod":
+			matches, result = matchWord2(f[2], []string{"glob", "regex", "text"})
+		case "selmode":
+			matches, result = matchWord2(f[2], []string{"all", "dir"})
+		case "sortby":
+			matches, result = matchWord2(f[2], []string{"atime", "btime", "ctime", "custom", "ext", "name", "natural", "size", "time"})
+		default:
+			if slices.Contains(gOptWords, f[1]+"!") {
+				matches, result = matchWord2(f[2], []string{"false", "true"})
+			}
+		}
+	case "setlocal":
+		if len(f) == 2 {
+			matches, result = matchFile2(f[1])
+			break
+		}
+		if len(f) == 3 {
+			matches, result = matchWord2(f[2], gLocalOptWords)
+			break
+		}
+		if len(f) != 4 {
+			break
+		}
+		switch f[2] {
+		case "sortby":
+			matches, result = matchWord2(f[3], []string{"atime", "btime", "ctime", "custom", "ext", "name", "natural", "size", "time"})
+		default:
+			if slices.Contains(gLocalOptWords, f[2]+"!") {
+				matches, result = matchWord2(f[3], []string{"false", "true"})
+			}
+		}
+	case "map", "nmap", "vmap", "cmap":
+		if len(f) == 3 {
+			matches, result = matchCmd2(f[2])
+		}
+	case "cmd":
+	case "toggle":
+		matches, result = matchFile2(f[len(f)-1])
+	case "cd", "select", "source":
+		if len(f) == 2 {
+			matches, result = matchFile2(f[1])
+		}
+	default:
+		if !slices.Contains(gCmdWords, f[0]) {
+			matches, result = matchFile2(f[len(f)-1])
+		}
+	}
+
+	f[len(f)-1] = result
+	result = strings.Join(f, " ")
+	return
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 func matchLongest(s1, s2 []rune) []rune {
