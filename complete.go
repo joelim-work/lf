@@ -175,8 +175,8 @@ func commonPrefix(s1, s2 string) string {
 }
 
 type compMatch struct {
-	name   string
-	result string
+	name   string // display name in completion menu
+	result string // result when cycling through completion menu
 }
 
 func matchWord2(s string, words []string) (matches []compMatch, result string) {
@@ -185,13 +185,12 @@ func matchWord2(s string, words []string) (matches []compMatch, result string) {
 			continue
 		}
 
-		if len(matches) == 0 {
+		matches = append(matches, compMatch{w, w})
+		if len(matches) == 1 {
 			result = w
 		} else {
 			result = commonPrefix(result, w)
 		}
-
-		matches = append(matches, compMatch{w, w})
 	}
 
 	switch len(matches) {
@@ -213,13 +212,19 @@ func matchCmd2(s string) (matches []compMatch, result string) {
 
 func matchFile2(s string) (matches []compMatch, result string) {
 	dir, file := filepath.Split(unescape(replaceTilde(s)))
-	// todo handle relative path
 
-	files, err := os.ReadDir(dir)
+	d := dir
+	if dir == "" {
+		d = "."
+	}
+	files, err := os.ReadDir(d)
 	if err != nil {
 		log.Printf("reading directory: %s", err)
+		result = s
 		return
 	}
+
+	var longest string
 
 	for _, f := range files {
 		if !strings.HasPrefix(strings.ToLower(f.Name()), strings.ToLower(file)) {
@@ -230,16 +235,26 @@ func matchFile2(s string) (matches []compMatch, result string) {
 		if f.IsDir() {
 			name += string(filepath.Separator)
 		}
-
-		result := filepath.Join(dir, name)
+		result := escape(dir + name)
 		matches = append(matches, compMatch{name, result})
+
+		if len(matches) == 1 {
+			longest = result
+		} else {
+			longest = commonPrefix(strings.ToLower(longest), strings.ToLower(result))
+		}
 	}
 
 	switch len(matches) {
 	case 0:
 		result = s
 	case 1:
-		result = result + " "
+		result = longest
+		if !strings.HasSuffix(result, string(filepath.Separator)) {
+			result += " "
+		}
+	default:
+		result = longest
 	}
 	return
 }
