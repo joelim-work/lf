@@ -297,6 +297,33 @@ func matchExec2(s string) (matches []compMatch, result string) {
 	return
 }
 
+func matchSearch2(s string) (matches []compMatch, result string) {
+	files, err := os.ReadDir(".")
+	if err != nil {
+		log.Printf("reading directory: %s", err)
+		result = s
+		return
+	}
+
+	for _, f := range files {
+		if !strings.HasPrefix(strings.ToLower(f.Name()), strings.ToLower(s)) {
+			continue
+		}
+
+		matches = append(matches, compMatch{f.Name(), f.Name()})
+		if len(matches) == 1 {
+			result = f.Name()
+		} else {
+			result = commonPrefix(strings.ToLower(result), strings.ToLower(f.Name()))
+		}
+	}
+
+	if len(matches) == 0 {
+		result = s
+	}
+	return
+}
+
 func completeCmd2(acc []rune) (matches []compMatch, result string) {
 	s := string(acc)
 	f := tokenize(s)
@@ -370,18 +397,22 @@ func completeCmd2(acc []rune) (matches []compMatch, result string) {
 }
 
 func completeShell2(acc []rune) (matches []compMatch, result string) {
-	s := string(acc)
-	f := tokenize(s)
+	f := tokenize(string(acc))
 
 	switch len(f) {
 	case 1:
-		matches, result = matchExec2(s)
+		matches, result = matchExec2(f[0])
 	default:
 		matches, result = matchFile2(f[len(f)-1])
 	}
 
 	f[len(f)-1] = result
 	result = strings.Join(f, " ")
+	return
+}
+
+func completeSearch2(acc []rune) (matches []compMatch, result string) {
+	matches, result = matchSearch2(string(acc))
 	return
 }
 

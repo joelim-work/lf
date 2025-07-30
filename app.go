@@ -673,6 +673,8 @@ func (app *app) doComplete() {
 		matches, result = completeCmd2(app.ui.cmdAccLeft)
 	case "$", "%", "!", "&":
 		matches, result = completeShell2(app.ui.cmdAccLeft)
+	case "/", "?":
+		matches, result = completeSearch2(app.ui.cmdAccLeft)
 	}
 
 	app.ui.cmdAccLeft = []rune(result)
