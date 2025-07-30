@@ -1668,40 +1668,6 @@ func anyKey() {
 	os.Stdin.Read(b)
 }
 
-func listMatches(screen tcell.Screen, matches []string, selectedInd int) string {
-	mlen := len(matches)
-	if mlen < 2 {
-		return ""
-	}
-
-	var b strings.Builder
-
-	wtot, _ := screen.Size()
-	wcol := 0
-	for _, m := range matches {
-		wcol = max(wcol, len(m))
-	}
-	wcol += gOpts.tabstop - wcol%gOpts.tabstop
-	ncol := max(wtot/wcol, 1)
-
-	b.WriteString("possible matches\n")
-
-	for i := 0; i < mlen; {
-		for j := 0; j < ncol && i < mlen; i, j = i+1, j+1 {
-			target := matches[i]
-
-			if selectedInd == i {
-				fmt.Fprintf(&b, "\033[7m%s\033[0m%*s", target, wcol-len(target), "")
-			} else {
-				fmt.Fprintf(&b, "%s%*s", target, wcol-len(target), "")
-			}
-		}
-		b.WriteByte('\n')
-	}
-
-	return b.String()
-}
-
 func listMatches2(screen tcell.Screen, matches []compMatch, selectedInd int) string {
 	mlen := len(matches)
 	if mlen < 2 {

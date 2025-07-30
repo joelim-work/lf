@@ -31,7 +31,6 @@ type app struct {
 	cmdHistoryBeg  int
 	cmdHistoryInd  int
 	menuCompActive bool
-	menuComps      []string
 	menuComps2     []compMatch
 	menuCompInd    int
 	selectionOut   []string
