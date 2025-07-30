@@ -276,9 +276,9 @@ func matchFile(s string) (matches []compMatch, result string) {
 		matches = append(matches, compMatch{name, result})
 
 		if len(matches) == 1 {
-			longest = result
+			longest = name
 		} else {
-			longest = commonPrefix(strings.ToLower(longest), strings.ToLower(result))
+			longest = commonPrefix(strings.ToLower(longest), strings.ToLower(name))
 		}
 	}
 
@@ -286,12 +286,12 @@ func matchFile(s string) (matches []compMatch, result string) {
 	case 0:
 		result = s
 	case 1:
-		result = longest
+		result = escape(dir + longest)
 		if !strings.HasSuffix(result, string(filepath.Separator)) {
 			result += " "
 		}
 	default:
-		result = longest
+		result = escape(dir + longest)
 	}
 	return
 }
