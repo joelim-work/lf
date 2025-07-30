@@ -179,7 +179,7 @@ type compMatch struct {
 	result string // result when cycling through completion menu
 }
 
-func matchWord2(s string, words []string) (matches []compMatch, result string) {
+func matchWord(s string, words []string) (matches []compMatch, result string) {
 	for _, w := range words {
 		if !strings.HasPrefix(w, s) {
 			continue
@@ -202,14 +202,14 @@ func matchWord2(s string, words []string) (matches []compMatch, result string) {
 	return
 }
 
-func matchCmd2(s string) (matches []compMatch, result string) {
+func matchCmd(s string) (matches []compMatch, result string) {
 	words := append(gCmdWords, slices.Collect(maps.Keys(gOpts.cmds))...)
 	slices.Sort(words)
-	matches, result = matchWord2(s, slices.Compact(words))
+	matches, result = matchWord(s, slices.Compact(words))
 	return
 }
 
-func matchFile2(s string) (matches []compMatch, result string) {
+func matchFile(s string) (matches []compMatch, result string) {
 	dir, file := filepath.Split(unescape(replaceTilde(s)))
 
 	d := dir
@@ -262,7 +262,7 @@ func matchFile2(s string) (matches []compMatch, result string) {
 	return
 }
 
-func matchExec2(s string) (matches []compMatch, result string) {
+func matchExec(s string) (matches []compMatch, result string) {
 	var words []string
 	for _, p := range strings.Split(envPath, string(filepath.ListSeparator)) {
 		files, err := os.ReadDir(p)
@@ -293,11 +293,11 @@ func matchExec2(s string) (matches []compMatch, result string) {
 	}
 
 	slices.Sort(words)
-	matches, result = matchWord2(s, slices.Compact(words))
+	matches, result = matchWord(s, slices.Compact(words))
 	return
 }
 
-func matchSearch2(s string) (matches []compMatch, result string) {
+func matchSearch(s string) (matches []compMatch, result string) {
 	files, err := os.ReadDir(".")
 	if err != nil {
 		log.Printf("reading directory: %s", err)
@@ -324,19 +324,19 @@ func matchSearch2(s string) (matches []compMatch, result string) {
 	return
 }
 
-func completeCmd2(acc []rune) (matches []compMatch, result string) {
+func completeCmd(acc []rune) (matches []compMatch, result string) {
 	s := string(acc)
 	f := tokenize(s)
 
 	if len(f) == 1 {
-		matches, result = matchCmd2(s)
+		matches, result = matchCmd(s)
 		return
 	}
 
 	switch f[0] {
 	case "set":
 		if len(f) == 2 {
-			matches, result = matchWord2(f[1], gOptWords)
+			matches, result = matchWord(f[1], gOptWords)
 			break
 		}
 		if len(f) != 3 {
@@ -344,23 +344,23 @@ func completeCmd2(acc []rune) (matches []compMatch, result string) {
 		}
 		switch f[1] {
 		case "filtermethod", "searchmethod":
-			matches, result = matchWord2(f[2], []string{"glob", "regex", "text"})
+			matches, result = matchWord(f[2], []string{"glob", "regex", "text"})
 		case "selmode":
-			matches, result = matchWord2(f[2], []string{"all", "dir"})
+			matches, result = matchWord(f[2], []string{"all", "dir"})
 		case "sortby":
-			matches, result = matchWord2(f[2], []string{"atime", "btime", "ctime", "custom", "ext", "name", "natural", "size", "time"})
+			matches, result = matchWord(f[2], []string{"atime", "btime", "ctime", "custom", "ext", "name", "natural", "size", "time"})
 		default:
 			if slices.Contains(gOptWords, f[1]+"!") {
-				matches, result = matchWord2(f[2], []string{"false", "true"})
+				matches, result = matchWord(f[2], []string{"false", "true"})
 			}
 		}
 	case "setlocal":
 		if len(f) == 2 {
-			matches, result = matchFile2(f[1])
+			matches, result = matchFile(f[1])
 			break
 		}
 		if len(f) == 3 {
-			matches, result = matchWord2(f[2], gLocalOptWords)
+			matches, result = matchWord(f[2], gLocalOptWords)
 			break
 		}
 		if len(f) != 4 {
@@ -368,26 +368,26 @@ func completeCmd2(acc []rune) (matches []compMatch, result string) {
 		}
 		switch f[2] {
 		case "sortby":
-			matches, result = matchWord2(f[3], []string{"atime", "btime", "ctime", "custom", "ext", "name", "natural", "size", "time"})
+			matches, result = matchWord(f[3], []string{"atime", "btime", "ctime", "custom", "ext", "name", "natural", "size", "time"})
 		default:
 			if slices.Contains(gLocalOptWords, f[2]+"!") {
-				matches, result = matchWord2(f[3], []string{"false", "true"})
+				matches, result = matchWord(f[3], []string{"false", "true"})
 			}
 		}
 	case "map", "nmap", "vmap", "cmap":
 		if len(f) == 3 {
-			matches, result = matchCmd2(f[2])
+			matches, result = matchCmd(f[2])
 		}
 	case "cmd":
 	case "toggle":
-		matches, result = matchFile2(f[len(f)-1])
+		matches, result = matchFile(f[len(f)-1])
 	case "cd", "select", "source":
 		if len(f) == 2 {
-			matches, result = matchFile2(f[1])
+			matches, result = matchFile(f[1])
 		}
 	default:
 		if !slices.Contains(gCmdWords, f[0]) {
-			matches, result = matchFile2(f[len(f)-1])
+			matches, result = matchFile(f[len(f)-1])
 		}
 	}
 
@@ -396,14 +396,14 @@ func completeCmd2(acc []rune) (matches []compMatch, result string) {
 	return
 }
 
-func completeShell2(acc []rune) (matches []compMatch, result string) {
+func completeShell(acc []rune) (matches []compMatch, result string) {
 	f := tokenize(string(acc))
 
 	switch len(f) {
 	case 1:
-		matches, result = matchExec2(f[0])
+		matches, result = matchExec(f[0])
 	default:
-		matches, result = matchFile2(f[len(f)-1])
+		matches, result = matchFile(f[len(f)-1])
 	}
 
 	f[len(f)-1] = result
@@ -411,7 +411,7 @@ func completeShell2(acc []rune) (matches []compMatch, result string) {
 	return
 }
 
-func completeSearch2(acc []rune) (matches []compMatch, result string) {
-	matches, result = matchSearch2(string(acc))
+func completeSearch(acc []rune) (matches []compMatch, result string) {
+	matches, result = matchSearch(string(acc))
 	return
 }

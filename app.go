@@ -31,7 +31,7 @@ type app struct {
 	cmdHistoryBeg  int
 	cmdHistoryInd  int
 	menuCompActive bool
-	menuComps2     []compMatch
+	menuComps      []compMatch
 	menuCompInd    int
 	selectionOut   []string
 	watch          *watch
@@ -669,38 +669,38 @@ func (app *app) doComplete() (matches []compMatch) {
 
 	switch app.ui.cmdPrefix {
 	case ":":
-		matches, result = completeCmd2(app.ui.cmdAccLeft)
+		matches, result = completeCmd(app.ui.cmdAccLeft)
 	case "$", "%", "!", "&":
-		matches, result = completeShell2(app.ui.cmdAccLeft)
+		matches, result = completeShell(app.ui.cmdAccLeft)
 	case "/", "?":
-		matches, result = completeSearch2(app.ui.cmdAccLeft)
+		matches, result = completeSearch(app.ui.cmdAccLeft)
 	}
 
 	app.ui.cmdAccLeft = []rune(result)
-	app.ui.menu = listMatches2(app.ui.screen, matches, -1)
+	app.ui.menu = listMatches(app.ui.screen, matches, -1)
 	return
 }
 
 func (app *app) menuComplete(dir int) {
 	if !app.menuCompActive {
-		app.menuComps2 = app.doComplete()
-		if len(app.menuComps2) > 1 {
+		app.menuComps = app.doComplete()
+		if len(app.menuComps) > 1 {
 			app.menuCompInd = -1
 			app.menuCompActive = true
 		}
 	} else {
 		app.menuCompInd += dir
-		if app.menuCompInd == len(app.menuComps2) {
+		if app.menuCompInd == len(app.menuComps) {
 			app.menuCompInd = 0
 		} else if app.menuCompInd < 0 {
-			app.menuCompInd = len(app.menuComps2) - 1
+			app.menuCompInd = len(app.menuComps) - 1
 		}
 
 		toks := tokenize(string(app.ui.cmdAccLeft))
-		toks[len(toks)-1] = app.menuComps2[app.menuCompInd].result
+		toks[len(toks)-1] = app.menuComps[app.menuCompInd].result
 		app.ui.cmdAccLeft = []rune(strings.Join(toks, " "))
 	}
-	app.ui.menu = listMatches2(app.ui.screen, app.menuComps2, app.menuCompInd)
+	app.ui.menu = listMatches(app.ui.screen, app.menuComps, app.menuCompInd)
 }
 
 func (app *app) watchDir(dir *dir) {

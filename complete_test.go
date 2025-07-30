@@ -66,7 +66,7 @@ func TestCommonPrefix(t *testing.T) {
 	}
 }
 
-func TestMatchWord2(t *testing.T) {
+func TestMatchWord(t *testing.T) {
 	tests := []struct {
 		s       string
 		words   []string
@@ -81,7 +81,7 @@ func TestMatchWord2(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		matches, result := matchWord2(test.s, test.words)
+		matches, result := matchWord(test.s, test.words)
 
 		if !reflect.DeepEqual(matches, test.matches) {
 			t.Errorf("at input '%s' with '%s' expected '%v' but got '%v'", test.s, test.words, test.matches, matches)

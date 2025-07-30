@@ -1668,7 +1668,7 @@ func anyKey() {
 	os.Stdin.Read(b)
 }
 
-func listMatches2(screen tcell.Screen, matches []compMatch, selectedInd int) string {
+func listMatches(screen tcell.Screen, matches []compMatch, selectedInd int) string {
 	mlen := len(matches)
 	if mlen < 2 {
 		return ""
