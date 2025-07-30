@@ -225,8 +225,10 @@ func quoteString(s string) string {
 }
 
 func shellEscape(s string) string {
-	if strings.Contains(" !%&'()+,;=[]^`{}~", s) {
-		return fmt.Sprintf(`"%s"`, s)
+	for _, r := range s {
+		if strings.ContainsRune(" !%&'()+,;=[]^`{}~", r) {
+			return fmt.Sprintf(`"%s"`, s)
+		}
 	}
 	return s
 }
