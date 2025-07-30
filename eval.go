@@ -1901,9 +1901,9 @@ func (e *callExpr) eval(app *app, args []string) {
 	case "cmd-complete":
 		app.doComplete()
 	case "cmd-menu-complete":
-		menuComplete(app, 1)
+		app.menuComplete(1)
 	case "cmd-menu-complete-back":
-		menuComplete(app, -1)
+		app.menuComplete(-1)
 	case "cmd-menu-accept":
 		app.ui.menu = ""
 		app.menuCompActive = false

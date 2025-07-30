@@ -32,6 +32,7 @@ type app struct {
 	cmdHistoryInd  int
 	menuCompActive bool
 	menuComps      []string
+	menuComps2     []compMatch
 	menuCompInd    int
 	selectionOut   []string
 	watch          *watch
@@ -664,8 +665,7 @@ func (app *app) runShell(s string, args []string, prefix string) {
 	}
 }
 
-func (app *app) doComplete() {
-	var matches []compMatch
+func (app *app) doComplete() (matches []compMatch) {
 	var result string
 
 	switch app.ui.cmdPrefix {
@@ -679,6 +679,29 @@ func (app *app) doComplete() {
 
 	app.ui.cmdAccLeft = []rune(result)
 	app.ui.menu = listMatches2(app.ui.screen, matches, -1)
+	return
+}
+
+func (app *app) menuComplete(dir int) {
+	if !app.menuCompActive {
+		app.menuComps2 = app.doComplete()
+		if len(app.menuComps2) > 1 {
+			app.menuCompInd = -1
+			app.menuCompActive = true
+		}
+	} else {
+		app.menuCompInd += dir
+		if app.menuCompInd == len(app.menuComps2) {
+			app.menuCompInd = 0
+		} else if app.menuCompInd < 0 {
+			app.menuCompInd = len(app.menuComps2) - 1
+		}
+
+		toks := tokenize(string(app.ui.cmdAccLeft))
+		toks[len(toks)-1] = app.menuComps2[app.menuCompInd].result
+		app.ui.cmdAccLeft = []rune(strings.Join(toks, " "))
+	}
+	app.ui.menu = listMatches2(app.ui.screen, app.menuComps2, app.menuCompInd)
 }
 
 func (app *app) watchDir(dir *dir) {
