@@ -262,6 +262,41 @@ func matchFile2(s string) (matches []compMatch, result string) {
 	return
 }
 
+func matchExec2(s string) (matches []compMatch, result string) {
+	var words []string
+	for _, p := range strings.Split(envPath, string(filepath.ListSeparator)) {
+		files, err := os.ReadDir(p)
+		if err != nil {
+			if !os.IsNotExist(err) {
+				log.Printf("reading path: %s", err)
+			}
+			continue
+		}
+
+		for _, f := range files {
+			if !strings.HasPrefix(f.Name(), s) {
+				continue
+			}
+
+			finfo, err := f.Info()
+			if err != nil {
+				log.Printf("getting file information: %s", err)
+				continue
+			}
+
+			if !finfo.Mode().IsRegular() || !isExecutable(finfo) {
+				continue
+			}
+
+			words = append(words, f.Name())
+		}
+	}
+
+	slices.Sort(words)
+	matches, result = matchWord2(s, slices.Compact(words))
+	return
+}
+
 func completeCmd2(acc []rune) (matches []compMatch, result string) {
 	s := string(acc)
 	f := tokenize(s)
@@ -327,6 +362,22 @@ func completeCmd2(acc []rune) (matches []compMatch, result string) {
 		if !slices.Contains(gCmdWords, f[0]) {
 			matches, result = matchFile2(f[len(f)-1])
 		}
+	}
+
+	f[len(f)-1] = result
+	result = strings.Join(f, " ")
+	return
+}
+
+func completeShell2(acc []rune) (matches []compMatch, result string) {
+	s := string(acc)
+	f := tokenize(s)
+
+	switch len(f) {
+	case 1:
+		matches, result = matchExec2(s)
+	default:
+		matches, result = matchFile2(f[len(f)-1])
 	}
 
 	f[len(f)-1] = result
