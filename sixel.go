@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/gdamore/tcell/v2"
 )
@@ -40,10 +41,8 @@ func (sxs *sixelScreen) printSixel(win *win, screen tcell.Screen, reg *reg) {
 		return
 	}
 
-	// Save cursor position
-	fmt.Fprint(os.Stderr, "\0337")
-
 	y := win.y
+	var b strings.Builder
 
 	for _, line := range reg.lines {
 		matches := reSixelSize.FindStringSubmatch(line)
@@ -53,8 +52,8 @@ func (sxs *sixelScreen) printSixel(win *win, screen tcell.Screen, reg *reg) {
 			}
 
 			screen.LockRegion(win.x, y, printLength(line), 1, true)
-			fmt.Fprintf(os.Stderr, "\033[%d;%dH", y+1, win.x+1)
-			fmt.Fprint(os.Stderr, line)
+			fmt.Fprintf(&b, "\033[%d;%dH", y+1, win.x+1)
+			b.WriteString(line)
 			y += 1
 			continue
 		}
@@ -77,13 +76,16 @@ func (sxs *sixelScreen) printSixel(win *win, screen tcell.Screen, reg *reg) {
 		}
 
 		screen.LockRegion(win.x, y, sw, sh, true)
-		fmt.Fprintf(os.Stderr, "\033[%d;%dH", y+1, win.x+1)
-		fmt.Fprint(os.Stderr, line)
+		fmt.Fprintf(&b, "\033[%d;%dH", y+1, win.x+1)
+		b.WriteString(line)
 		y += sh
 	}
 
-	// Restore cursor position
-	fmt.Fprint(os.Stderr, "\0338")
+	fmt.Fprint(os.Stderr, "\033[?2026h") // Begin synchronized update
+	fmt.Fprint(os.Stderr, "\0337")       // Save cursor position
+	fmt.Fprint(os.Stderr, b.String())    // Write data
+	fmt.Fprint(os.Stderr, "\0338")       // Restore cursor position
+	fmt.Fprint(os.Stderr, "\033[?2026l") // End synchronized update
 
 	sxs.lastFile = reg.path
 	sxs.lastWin = *win
