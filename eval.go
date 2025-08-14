@@ -92,10 +92,7 @@ func (e *setExpr) eval(app *app, args []string) {
 		err = applyBoolOpt(&gOpts.drawbox, e)
 		if err == nil {
 			app.ui.renew()
-			if app.nav.height != app.ui.wins[0].h {
-				app.nav.height = app.ui.wins[0].h
-				clear(app.nav.regCache)
-			}
+			clear(app.nav.regCache)
 			app.ui.loadFile(app, true)
 		}
 	// DEPRECATED: remove after r37 is released
