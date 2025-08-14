@@ -45,8 +45,7 @@ func (sxs *sixelScreen) printSixel(win *win, screen tcell.Screen, reg *reg) {
 	var b strings.Builder
 
 	for _, line := range reg.lines {
-		matches := reSixelSize.FindStringSubmatch(line)
-		if matches == nil {
+		if !strings.HasPrefix(line, "\033P") {
 			if y >= win.y+win.h {
 				break
 			}
@@ -57,6 +56,12 @@ func (sxs *sixelScreen) printSixel(win *win, screen tcell.Screen, reg *reg) {
 			line += strings.Repeat(" ", max(win.w-printLength(line), 0))
 			b.WriteString(line)
 			y += 1
+			continue
+		}
+
+		matches := reSixelSize.FindStringSubmatch(line)
+		if matches == nil {
+			log.Printf("sixel: failed to get image size")
 			continue
 		}
 
