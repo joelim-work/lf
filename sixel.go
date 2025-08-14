@@ -53,7 +53,7 @@ func (sxs *sixelScreen) printSixel(win *win, screen tcell.Screen, reg *reg) {
 
 			screen.LockRegion(win.x, y, printLength(line), 1, true)
 			fmt.Fprintf(&b, "\033[%d;%dH", y+1, win.x+1)
-			b.WriteString(line)
+			b.WriteString(string(runeSliceWidthRange([]rune(line), 0, win.w)))
 			y += 1
 			continue
 		}
