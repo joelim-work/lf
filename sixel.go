@@ -29,7 +29,7 @@ func (sxs *sixelScreen) printSixel(win *win, screen tcell.Screen, reg *reg) {
 		return
 	}
 
-	if reg.sixel == nil {
+	if !reg.sixel {
 		sxs.lastFile = ""
 		return
 	}
@@ -40,26 +40,50 @@ func (sxs *sixelScreen) printSixel(win *win, screen tcell.Screen, reg *reg) {
 		return
 	}
 
-	matches := reSixelSize.FindStringSubmatch(*reg.sixel)
-	if matches == nil {
-		log.Printf("sixel: failed to get image size")
-		return
-	}
-	iw, _ := strconv.Atoi(matches[1])
-	ih, _ := strconv.Atoi(matches[2])
+	// Save cursor position
+	fmt.Fprint(os.Stderr, "\0337")
 
-	if os.Getenv("TMUX") != "" {
-		// tmux rounds the image height up to a multiple of 6, so we
-		// need to do the same to avoid overwriting the image, as tmux
-		// would remove the image if we touched it.
-		ih = (ih + 5) / 6 * 6
+	y := win.y
+
+	for _, line := range reg.lines {
+		matches := reSixelSize.FindStringSubmatch(line)
+		if matches == nil {
+			if y >= win.y+win.h {
+				break
+			}
+
+			screen.LockRegion(win.x, y, printLength(line), 1, true)
+			fmt.Fprintf(os.Stderr, "\033[%d;%dH", y+1, win.x+1)
+			fmt.Fprint(os.Stderr, line)
+			y += 1
+			continue
+		}
+
+		iw, _ := strconv.Atoi(matches[1])
+		ih, _ := strconv.Atoi(matches[2])
+
+		if os.Getenv("TMUX") != "" {
+			// tmux rounds the image height up to a multiple of 6, so we
+			// need to do the same to avoid overwriting the image, as tmux
+			// would remove the image if we touched it.
+			ih = (ih + 5) / 6 * 6
+		}
+
+		sw := (iw + cw - 1) / cw
+		sh := (ih + ch - 1) / ch
+
+		if y-1+sh >= win.y+win.h {
+			break
+		}
+
+		screen.LockRegion(win.x, y, sw, sh, true)
+		fmt.Fprintf(os.Stderr, "\033[%d;%dH", y+1, win.x+1)
+		fmt.Fprint(os.Stderr, line)
+		y += sh
 	}
 
-	screen.LockRegion(win.x, win.y, (iw+cw-1)/cw, (ih+ch-1)/ch, true)
-	fmt.Fprint(os.Stderr, "\0337")                          // Save cursor position
-	fmt.Fprintf(os.Stderr, "\033[%d;%dH", win.y+1, win.x+1) // Move cursor to position
-	fmt.Fprint(os.Stderr, *reg.sixel)                       // Print sixel
-	fmt.Fprint(os.Stderr, "\0338")                          // Restore cursor position
+	// Restore cursor position
+	fmt.Fprint(os.Stderr, "\0338")
 
 	sxs.lastFile = reg.path
 	sxs.lastWin = *win
@@ -68,7 +92,8 @@ func (sxs *sixelScreen) printSixel(win *win, screen tcell.Screen, reg *reg) {
 
 func cellSize(screen tcell.Screen) (int, int, error) {
 	tty, ok := screen.Tty()
-	if !ok {
+	// if !ok {
+	if ok {
 		// fallback for Windows Terminal
 		return 10, 20, nil
 	}

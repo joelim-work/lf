@@ -443,3 +443,39 @@ func TestStripAnsi(t *testing.T) {
 		}
 	}
 }
+
+func TestReadLines(t *testing.T) {
+	tests := []struct {
+		s      string
+		lines  []string
+		binary bool
+		sixel  bool
+	}{
+		{"", nil, false, false},
+		{"\r", nil, false, false},
+		{"\r\n", []string{""}, false, false},
+		{"\r\r\n", []string{""}, false, false},
+		{"\n\n", []string{"", ""}, false, false},
+		{"foo", []string{"foo"}, false, false},
+		{"foo\n", []string{"foo"}, false, false},
+		{"foo\r\n", []string{"foo"}, false, false},
+		{"foo\nbar", []string{"foo", "bar"}, false, false},
+		{"foo\nbar\n", []string{"foo", "bar"}, false, false},
+		{"foo\r\nbar", []string{"foo", "bar"}, false, false},
+		{"foo\r\nbar\r\n", []string{"foo", "bar"}, false, false},
+		{"\000", nil, true, false},
+		{"foo\r\n\000\r\nbar\r\n", nil, true, false},
+		{"\033P\033\\", []string{"\033P\033\\"}, false, true},
+		{"\033Pq\"1;1;1;1#0@\033\\", []string{"\033Pq\"1;1;1;1#0@\033\\"}, false, true},
+		{"\033P\033\\\033P\033\\", []string{"\033P\033\\", "\033P\033\\"}, false, true},
+		{"foo\033P\033\\bar", []string{"foo", "\033P\033\\", "bar"}, false, true},
+		{"foo\033P\033\\bar\033P\033\\baz", []string{"foo", "\033P\033\\", "bar", "\033P\033\\", "baz"}, false, true},
+	}
+
+	for _, test := range tests {
+		lines, binary, sixel := readLines(strings.NewReader(test.s))
+		if !reflect.DeepEqual(lines, test.lines) || binary != test.binary || sixel != test.sixel {
+			t.Errorf("at input %q expected (%#v, %v, %v) but got (%#v, %v, %v)", test.s, test.lines, test.binary, test.sixel, lines, binary, sixel)
+		}
+	}
+}
