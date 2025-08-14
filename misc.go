@@ -423,6 +423,7 @@ func stripAnsi(s string) string {
 }
 
 // This function reads lines from a file to be displayed as a preview.
+// The number of lines to read is capped since files can be very large.
 // Lines are split on `\n` characters, and `\r` characters are discarded.
 // Sixel images are also detected and stored as separate lines.
 // The presence of a null byte outside a sixel image indicates a binary file.
