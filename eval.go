@@ -148,10 +148,8 @@ func (e *setExpr) eval(app *app, args []string) {
 			err = errors.New("preview: 'ratios' should consist of at least two numbers before enabling 'preview'")
 		}
 		if err == nil {
-			if gOpts.sixel {
-				app.ui.sxScreen.forceClear = true
-			}
 			gOpts.preview = preview
+			app.ui.sxScreen.forceClear = true
 			app.ui.loadFile(app, true)
 		}
 	case "relativenumber", "norelativenumber", "relativenumber!":
@@ -166,11 +164,6 @@ func (e *setExpr) eval(app *app, args []string) {
 		err = applyBoolOpt(&gOpts.roundbox, e)
 	case "showbinds", "noshowbinds", "showbinds!":
 		err = applyBoolOpt(&gOpts.showbinds, e)
-	case "sixel", "nosixel", "sixel!":
-		err = applyBoolOpt(&gOpts.sixel, e)
-		clear(app.nav.regCache)
-		app.ui.sxScreen.forceClear = true
-		app.ui.loadFile(app, true)
 	case "smartcase", "nosmartcase", "smartcase!":
 		err = applyBoolOpt(&gOpts.smartcase, e)
 		if err == nil {
@@ -355,9 +348,7 @@ func (e *setExpr) eval(app *app, args []string) {
 		}
 		gOpts.ratios = rats
 		app.ui.wins = getWins(app.ui.screen)
-		if gOpts.sixel {
-			clear(app.nav.regCache)
-		}
+		clear(app.nav.regCache)
 		app.ui.loadFile(app, true)
 	case "rulerfmt":
 		gOpts.rulerfmt = e.val
@@ -1352,13 +1343,10 @@ func (e *callExpr) eval(app *app, args []string) {
 			app.nav.height = app.ui.wins[0].h
 			clear(app.nav.regCache)
 		}
-		if gOpts.sixel {
-			clear(app.nav.regCache)
-			app.ui.sxScreen.forceClear = true
-		}
 		for _, dir := range app.nav.dirs {
 			dir.boundPos(app.nav.height)
 		}
+		app.ui.sxScreen.forceClear = true
 		app.ui.loadFile(app, true)
 		onRedraw(app)
 	case "load":
