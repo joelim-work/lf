@@ -477,8 +477,10 @@ func TestReadLines(t *testing.T) {
 		{"foo\033P\033\\bar\033P\033\\baz", 10, []string{"foo", "\033P\033\\", "bar", "\033P\033\\", "baz"}, false, true},
 		{"foo\nbar\nbaz", 2, []string{"foo", "bar"}, false, false},
 		{"foo\nbar\nbaz\n", 2, []string{"foo", "bar"}, false, false},
+		{"foo\nbar\033P\033\\", 2, []string{"foo", "bar"}, false, false},
 		{"foo\nbar\nbaz", 3, []string{"foo", "bar", "baz"}, false, false},
 		{"foo\nbar\nbaz\n", 3, []string{"foo", "bar", "baz"}, false, false},
+		{"foo\nbar\033P\033\\", 3, []string{"foo", "bar", "\033P\033\\"}, false, true},
 	}
 
 	for _, test := range tests {

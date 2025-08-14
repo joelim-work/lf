@@ -101,7 +101,7 @@ func (sxs *sixelScreen) printSixel(win *win, screen tcell.Screen, reg *reg) {
 
 func cellSize(screen tcell.Screen) (int, int, error) {
 	tty, ok := screen.Tty()
-	if !ok {
+	if ok {
 		// fallback for Windows Terminal
 		return 10, 20, nil
 	}
