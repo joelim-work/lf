@@ -913,7 +913,7 @@ func (nav *nav) preview(path string, win *win) {
 		reader = bufio.NewReader(f)
 	}
 
-	lines, binary, sixel := readLines(reader)
+	lines, binary, sixel := readLines(reader, win.h)
 	if binary {
 		lines = []string{"\033[7mbinary\033[0m"}
 	}

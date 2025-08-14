@@ -426,7 +426,7 @@ func stripAnsi(s string) string {
 // Lines are split on `\n` characters, and `\r` characters are discarded.
 // Sixel images are also detected and stored as separate lines.
 // The presence of a null byte outside a sixel image indicates a binary file.
-func readLines(reader io.ByteReader) (lines []string, binary bool, sixel bool) {
+func readLines(reader io.ByteReader, maxLines int) (lines []string, binary bool, sixel bool) {
 	var buf bytes.Buffer
 	var last byte
 	inSixel := false
@@ -445,6 +445,9 @@ func readLines(reader io.ByteReader) (lines []string, binary bool, sixel bool) {
 			if b == '\\' && last == '\033' {
 				lines = append(lines, buf.String())
 				buf.Reset()
+				if len(lines) >= maxLines {
+					return
+				}
 				inSixel = false
 			}
 		} else {
@@ -456,8 +459,11 @@ func readLines(reader io.ByteReader) (lines []string, binary bool, sixel bool) {
 			case b == 'P' && last == '\033':
 				if buf.Len() > 0 {
 					lines = append(lines, buf.String())
+					buf.Reset()
+					if len(lines) >= maxLines {
+						return
+					}
 				}
-				buf.Reset()
 				buf.WriteByte(last)
 				buf.WriteByte(b)
 				inSixel = true
@@ -470,6 +476,9 @@ func readLines(reader io.ByteReader) (lines []string, binary bool, sixel bool) {
 			case b == '\n':
 				lines = append(lines, buf.String())
 				buf.Reset()
+				if len(lines) >= maxLines {
+					return
+				}
 			default:
 				buf.WriteByte(b)
 			}
