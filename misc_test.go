@@ -486,7 +486,12 @@ func TestReadLines(t *testing.T) {
 	for _, test := range tests {
 		lines, binary, sixel := readLines(strings.NewReader(test.s), test.maxLines)
 		if !reflect.DeepEqual(lines, test.lines) || binary != test.binary || sixel != test.sixel {
-			t.Errorf("at input %q expected (%#v, %v, %v) but got (%#v, %v, %v)", test.s, test.lines, test.binary, test.sixel, lines, binary, sixel)
+			t.Errorf(
+				"at input (%q, %v) expected (%#v, %v, %v) but got (%#v, %v, %v)",
+				test.s, test.maxLines,
+				test.lines, test.binary, test.sixel,
+				lines, binary, sixel,
+			)
 		}
 	}
 }
