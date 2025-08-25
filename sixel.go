@@ -78,7 +78,7 @@ func (sxs *sixelScreen) printSixel(win *win, screen tcell.Screen, reg *reg) {
 		sw := (iw + cw - 1) / cw
 		sh := (ih + ch - 1) / ch
 
-		if y-1+sh >= win.y+win.h {
+		if y+sh-1 >= win.y+win.h {
 			break
 		}
 
