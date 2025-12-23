@@ -677,13 +677,9 @@ func update(app *app) {
 		}
 	case gOpts.incfilter && app.ui.cmdPrefix == "filter: ":
 		filter := string(app.ui.cmdAccLeft) + string(app.ui.cmdAccRight)
-		dir := app.nav.currDir()
-		old := dir.ind
 
 		if err := app.nav.setFilter(strings.Split(filter, " ")); err != nil {
 			app.ui.echoerrf("filter: %s", err)
-		} else if old != dir.ind {
-			app.ui.loadFile(app, true)
 		}
 	}
 }
