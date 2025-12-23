@@ -457,7 +457,6 @@ func (app *app) loop() {
 			}
 
 			delete(app.nav.regCache, f.path)
-			app.ui.loadFile(app, false)
 			onLoad(app, []string{f.path})
 			app.ui.draw(app.nav)
 		case path := <-app.nav.delChan:
