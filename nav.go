@@ -1796,48 +1796,52 @@ func searchMatch(name, pattern string, method searchMethod) (matched bool, err e
 	}
 }
 
-func (nav *nav) searchNext() (bool, error) {
+func (nav *nav) searchNext() error {
 	dir := nav.currDir()
 	for i := dir.ind + 1; i < len(dir.files); i++ {
 		if matched, err := searchMatch(dir.files[i].Name(), nav.search, gOpts.searchmethod); err != nil {
-			return false, err
+			return err
 		} else if matched {
-			return nav.down(i - dir.ind), nil
+			nav.down(i - dir.ind)
+			return nil
 		}
 	}
 	if gOpts.wrapscan {
 		for i := range dir.ind {
 			if matched, err := searchMatch(dir.files[i].Name(), nav.search, gOpts.searchmethod); err != nil {
-				return false, err
+				return err
 			} else if matched {
 				dir.visualWrap++
-				return nav.up(dir.ind - i), nil
+				nav.up(dir.ind - i)
+				return nil
 			}
 		}
 	}
-	return false, nil
+	return nil
 }
 
-func (nav *nav) searchPrev() (bool, error) {
+func (nav *nav) searchPrev() error {
 	dir := nav.currDir()
 	for i := dir.ind - 1; i >= 0; i-- {
 		if matched, err := searchMatch(dir.files[i].Name(), nav.search, gOpts.searchmethod); err != nil {
-			return false, err
+			return err
 		} else if matched {
-			return nav.up(dir.ind - i), nil
+			nav.up(dir.ind - i)
+			return nil
 		}
 	}
 	if gOpts.wrapscan {
 		for i := len(dir.files) - 1; i > dir.ind; i-- {
 			if matched, err := searchMatch(dir.files[i].Name(), nav.search, gOpts.searchmethod); err != nil {
-				return false, err
+				return err
 			} else if matched {
 				dir.visualWrap--
-				return nav.down(i - dir.ind), nil
+				nav.down(i - dir.ind)
+				return nil
 			}
 		}
 	}
-	return false, nil
+	return nil
 }
 
 func isFiltered(f os.FileInfo, filter []string) bool {
