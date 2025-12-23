@@ -766,7 +766,7 @@ func (ui *ui) loadFile(app *app, volatile bool) {
 	}
 
 	if curr.isPreviewable() {
-		app.nav.loadReg(curr.path, volatile)
+		// app.nav.loadReg(curr.path, volatile)
 	} else if curr.IsDir() {
 		dir := app.nav.getDir(curr.path)
 		app.nav.checkDir(dir)
@@ -1139,9 +1139,8 @@ func (ui *ui) drawPreview(nav *nav, context *dirContext) {
 
 	if gOpts.preview {
 		if curr.isPreviewable() {
-			if reg, ok := nav.regCache[curr.path]; ok {
-				win.printReg(ui.screen, reg, nav.previewLoading, &ui.sxScreen)
-			}
+			reg := nav.loadReg2(curr.path)
+			win.printReg(ui.screen, reg, nav.previewLoading, &ui.sxScreen)
 		} else if curr.IsDir() {
 			ui.sxScreen.lastFile = ""
 			dir := nav.getDir(curr.path)

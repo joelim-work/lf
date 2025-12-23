@@ -490,6 +490,7 @@ type nav struct {
 	searchInd       int
 	searchPos       int
 	prevFilter      []string
+	lastPreview     *reg
 	volatilePreview bool
 	previewTimer    *time.Timer
 	previewLoading  bool
@@ -617,6 +618,7 @@ func newNav(ui *ui) *nav {
 		selections:      make(map[string]int),
 		tags:            make(map[string]string),
 		selectionInd:    0,
+		lastPreview:     &reg{},
 		previewTimer:    time.NewTimer(0),
 		preloadTimer:    time.NewTimer(0),
 		jumpList:        make([]string, 0),
@@ -955,6 +957,28 @@ func (nav *nav) loadReg(path string, volatile bool) *reg {
 	}
 
 	nav.checkReg(r)
+	return r
+}
+
+func (nav *nav) loadReg2(path string) *reg {
+	r, ok := nav.regCache[path]
+	if !ok {
+		r = &reg{loading: true, loadTime: time.Now(), path: path}
+		nav.regCache[path] = r
+	}
+
+	if nav.lastPreview != r {
+		if nav.lastPreview.volatile {
+			nav.previewChan <- ""
+		}
+		if (r.loading && !gOpts.preload) || r.volatile {
+			r.loading = true
+			nav.startPreview()
+			nav.previewChan <- path
+		}
+	}
+
+	nav.lastPreview = r
 	return r
 }
 
