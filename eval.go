@@ -87,14 +87,12 @@ func (e *setExpr) eval(app *app, _ []string) {
 		if err == nil {
 			app.ui.renew()
 			app.nav.resize(app.ui)
-			app.ui.loadFile(app, true)
 		}
 	case "hidden", "nohidden", "hidden!":
 		err = applyBoolOpt(&gOpts.hidden, e)
 		if err == nil {
 			app.nav.sort()
 			app.nav.position()
-			app.ui.loadFile(app, true)
 		}
 	case "history", "nohistory", "history!":
 		err = applyBoolOpt(&gOpts.history, e)
@@ -105,14 +103,12 @@ func (e *setExpr) eval(app *app, _ []string) {
 		if err == nil {
 			app.nav.sort()
 			app.nav.position()
-			app.ui.loadFile(app, true)
 		}
 	case "ignoredia", "noignoredia", "ignoredia!":
 		err = applyBoolOpt(&gOpts.ignoredia, e)
 		if err == nil {
 			app.nav.sort()
 			app.nav.position()
-			app.ui.loadFile(app, true)
 		}
 	case "incfilter", "noincfilter", "incfilter!":
 		err = applyBoolOpt(&gOpts.incfilter, e)
@@ -160,14 +156,12 @@ func (e *setExpr) eval(app *app, _ []string) {
 		if err == nil {
 			app.nav.sort()
 			app.nav.position()
-			app.ui.loadFile(app, true)
 		}
 	case "smartdia", "nosmartdia", "smartdia!":
 		err = applyBoolOpt(&gOpts.smartdia, e)
 		if err == nil {
 			app.nav.sort()
 			app.nav.position()
-			app.ui.loadFile(app, true)
 		}
 	case "watch", "nowatch", "watch!":
 		err = applyBoolOpt(&gOpts.watch, e)
@@ -215,7 +209,6 @@ func (e *setExpr) eval(app *app, _ []string) {
 		}
 		app.nav.sort()
 		app.nav.position()
-		app.ui.loadFile(app, true)
 	case "findlen":
 		n, err := strconv.Atoi(e.val)
 		if err != nil {
@@ -243,7 +236,6 @@ func (e *setExpr) eval(app *app, _ []string) {
 		gOpts.hiddenfiles = toks
 		app.nav.sort()
 		app.nav.position()
-		app.ui.loadFile(app, true)
 	case "ifs":
 		gOpts.ifs = e.val
 	case "info":
