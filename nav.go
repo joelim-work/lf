@@ -691,6 +691,15 @@ func (nav *nav) renew() {
 		nav.checkDir(dir)
 	}
 
+	if curr := nav.currFile(); curr != nil {
+		if curr.isPreviewable() {
+			nav.checkReg(curr.path)
+		} else if curr.IsDir() {
+			dir := nav.getDir(curr.path)
+			nav.checkDir(dir)
+		}
+	}
+
 	for m := range nav.selections {
 		if _, err := os.Lstat(m); os.IsNotExist(err) {
 			delete(nav.selections, m)
