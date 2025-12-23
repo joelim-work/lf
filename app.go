@@ -502,6 +502,7 @@ func (app *app) loop() {
 
 func (app *app) runCmdSync(cmd *exec.Cmd, pauseAfter bool) {
 	app.nav.previewChan <- ""
+	app.nav.lastPreview = &reg{}
 
 	if err := app.ui.suspend(); err != nil {
 		log.Printf("suspend: %s", err)
@@ -520,7 +521,6 @@ func (app *app) runCmdSync(cmd *exec.Cmd, pauseAfter bool) {
 		anyKey()
 	}
 
-	app.ui.loadFile(app, true)
 	app.nav.renew()
 }
 
