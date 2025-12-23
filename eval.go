@@ -1373,7 +1373,6 @@ func (e *callExpr) eval(app *app, _ []string) {
 		if err := app.nav.setFilter(e.args); err != nil {
 			app.ui.echoerrf("filter: %s", err)
 		}
-		app.ui.loadFile(app, true)
 	case "mark-save":
 		if app.ui.cmdPrefix == ">" {
 			return
