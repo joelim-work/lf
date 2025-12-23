@@ -68,7 +68,6 @@ func (e *setExpr) eval(app *app, _ []string) {
 		err = applyBoolOpt(&gOpts.dircounts, e)
 		if err == nil {
 			app.nav.renew()
-			app.ui.loadFile(app, false)
 		}
 	case "dirfirst", "nodirfirst", "dirfirst!":
 		err = applyBoolOpt(&gOpts.dirfirst, e)
