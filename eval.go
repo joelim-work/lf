@@ -955,33 +955,21 @@ func (e *callExpr) eval(app *app, _ []string) {
 	case "quit":
 		app.quitChan <- struct{}{}
 	case "up":
-		if app.nav.up(e.count) {
-			app.ui.loadFile(app, true)
-		}
+		app.nav.up(e.count)
 	case "half-up":
-		if app.nav.up(e.count * app.nav.height / 2) {
-			app.ui.loadFile(app, true)
-		}
+		app.nav.up(e.count * app.nav.height / 2)
 	case "page-up":
-		if app.nav.up(e.count * app.nav.height) {
-			app.ui.loadFile(app, true)
-		}
+		app.nav.up(e.count * app.nav.height)
 	case "scroll-up":
 		if app.nav.scrollUp(e.count) {
 			app.ui.loadFile(app, true)
 		}
 	case "down":
-		if app.nav.down(e.count) {
-			app.ui.loadFile(app, true)
-		}
+		app.nav.down(e.count)
 	case "half-down":
-		if app.nav.down(e.count * app.nav.height / 2) {
-			app.ui.loadFile(app, true)
-		}
+		app.nav.down(e.count * app.nav.height / 2)
 	case "page-down":
-		if app.nav.down(e.count * app.nav.height) {
-			app.ui.loadFile(app, true)
-		}
+		app.nav.down(e.count * app.nav.height)
 	case "scroll-down":
 		if app.nav.scrollDown(e.count) {
 			app.ui.loadFile(app, true)

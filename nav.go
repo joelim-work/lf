@@ -1061,17 +1061,15 @@ func (nav *nav) setFilter(filter []string) error {
 	return nil
 }
 
-func (nav *nav) up(dist int) bool {
+func (nav *nav) up(dist int) {
 	dir := nav.currDir()
-
-	old := dir.ind
 
 	if dir.ind == 0 {
 		if gOpts.wrapscroll {
 			nav.bottom()
 			dir.visualWrap--
 		}
-		return old != dir.ind
+		return
 	}
 
 	dir.ind -= dist
@@ -1079,14 +1077,10 @@ func (nav *nav) up(dist int) bool {
 
 	dir.pos -= dist
 	dir.boundPos(nav.height)
-
-	return old != dir.ind
 }
 
-func (nav *nav) down(dist int) bool {
+func (nav *nav) down(dist int) {
 	dir := nav.currDir()
-
-	old := dir.ind
 
 	maxind := len(dir.files) - 1
 
@@ -1095,7 +1089,7 @@ func (nav *nav) down(dist int) bool {
 			nav.top()
 			dir.visualWrap++
 		}
-		return old != dir.ind
+		return
 	}
 
 	dir.ind += dist
@@ -1103,8 +1097,6 @@ func (nav *nav) down(dist int) bool {
 
 	dir.pos += dist
 	dir.boundPos(nav.height)
-
-	return old != dir.ind
 }
 
 func (nav *nav) scrollUp(dist int) bool {
