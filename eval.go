@@ -1820,7 +1820,6 @@ func (e *callExpr) eval(app *app, _ []string) {
 					return
 				}
 			}
-			app.ui.loadFile(app, true)
 		default:
 			log.Printf("entering unknown execution prefix: %q", app.ui.cmdPrefix)
 		}
