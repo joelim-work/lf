@@ -701,17 +701,10 @@ func resetIncCmd(app *app) {
 	if gOpts.incsearch && (app.ui.cmdPrefix == "/" || app.ui.cmdPrefix == "?") {
 		dir := app.nav.currDir()
 		dir.pos = app.nav.searchPos
-		if dir.ind != app.nav.searchInd {
-			dir.ind = app.nav.searchInd
-			app.ui.loadFile(app, true)
-		}
+		dir.ind = app.nav.searchInd
 	} else if gOpts.incfilter && app.ui.cmdPrefix == "filter: " {
-		dir := app.nav.currDir()
-		old := dir.ind
 		if err := app.nav.setFilter(app.nav.prevFilter); err != nil {
 			log.Printf("reset filter: %s", err)
-		} else if old != dir.ind {
-			app.ui.loadFile(app, true)
 		}
 	}
 }
