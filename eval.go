@@ -1282,30 +1282,20 @@ func (e *callExpr) eval(app *app, _ []string) {
 		app.ui.cmdPrefix = "find-back: "
 		app.nav.findBack = true
 	case "find-next":
-		dir := app.nav.currDir()
-		old := dir.ind
 		for range e.count {
 			if app.nav.findBack {
 				app.nav.findPrev()
 			} else {
 				app.nav.findNext()
 			}
-		}
-		if old != dir.ind {
-			app.ui.loadFile(app, true)
 		}
 	case "find-prev":
-		dir := app.nav.currDir()
-		old := dir.ind
 		for range e.count {
 			if app.nav.findBack {
 				app.nav.findNext()
 			} else {
 				app.nav.findPrev()
 			}
-		}
-		if old != dir.ind {
-			app.ui.loadFile(app, true)
 		}
 	case "search":
 		if app.ui.cmdPrefix == ">" {
