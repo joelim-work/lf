@@ -1216,7 +1216,7 @@ func (e *callExpr) eval(app *app, _ []string) {
 		app.ui.renew()
 		app.nav.resize(app.ui)
 		app.ui.sxScreen.forceClear = true
-		app.ui.loadFile(app, true)
+		app.nav.lastPreview = &reg{}
 		onRedraw(app)
 	case "load":
 		if gOpts.watch {
