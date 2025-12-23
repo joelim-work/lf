@@ -934,33 +934,7 @@ func (nav *nav) preview(path string, win *win, mode string) {
 	reg.sixel = sixel
 }
 
-func (nav *nav) loadReg(path string, volatile bool) *reg {
-	r, ok := nav.regCache[path]
-	if !ok || (!gOpts.preload && r.loading) {
-		r = &reg{loading: true, loadTime: time.Now(), path: path}
-		nav.regCache[path] = r
-		nav.startPreview()
-		if gOpts.preload {
-			select {
-			case nav.preloadChan <- path:
-			default:
-			}
-		} else {
-			nav.previewChan <- path
-		}
-		return r
-	}
-
-	if volatile && r.volatile {
-		nav.startPreview()
-		nav.previewChan <- path
-	}
-
-	nav.checkReg(r)
-	return r
-}
-
-func (nav *nav) loadReg2(path string) *reg {
+func (nav *nav) loadReg(path string) *reg {
 	r, ok := nav.regCache[path]
 	if !ok {
 		r = &reg{loading: true, loadTime: time.Now(), path: path}
@@ -982,7 +956,12 @@ func (nav *nav) loadReg2(path string) *reg {
 	return r
 }
 
-func (nav *nav) checkReg(reg *reg) {
+func (nav *nav) checkReg(path string) {
+	reg, ok := nav.regCache[path]
+	if !ok {
+		return
+	}
+
 	s, err := os.Stat(reg.path)
 	if err != nil {
 		return

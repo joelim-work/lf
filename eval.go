@@ -623,7 +623,6 @@ func onRedraw(app *app) {
 }
 
 func onSelect(app *app) {
-	app.nav.preload()
 	if cmd, ok := gOpts.cmds["on-select"]; ok {
 		cmd.eval(app, nil)
 	}
@@ -987,6 +986,11 @@ func (e *callExpr) eval(app *app, _ []string) {
 	}
 	if !slices.Contains(silentCmds, e.name) && app.ui.cmdPrefix != ">" {
 		app.ui.echo("")
+	}
+
+	var oldPath string
+	if curr := app.nav.currFile(); curr != nil {
+		oldPath = curr.path
 	}
 
 	switch e.name {
@@ -2105,6 +2109,17 @@ func (e *callExpr) eval(app *app, _ []string) {
 			return
 		}
 		cmd.eval(app, e.args)
+	}
+
+	if curr := app.nav.currFile(); curr != nil && curr.path != oldPath {
+		if curr.isPreviewable() {
+			app.nav.checkReg(curr.path)
+		} else if curr.IsDir() {
+			dir := app.nav.getDir(curr.path)
+			app.nav.checkDir(dir)
+		}
+		app.nav.preload()
+		onSelect(app)
 	}
 }
 

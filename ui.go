@@ -747,30 +747,28 @@ type reg struct {
 }
 
 func (ui *ui) loadFile(app *app, volatile bool) {
-	curr := app.nav.currFile()
-	if curr == nil {
-		return
-	}
-
-	if curr.path != ui.currentFile {
-		ui.currentFile = curr.path
-		onSelect(app)
-	}
-
-	if volatile {
-		app.nav.previewChan <- ""
-	}
-
-	if !gOpts.preview {
-		return
-	}
-
-	if curr.isPreviewable() {
-		// app.nav.loadReg(curr.path, volatile)
-	} else if curr.IsDir() {
-		dir := app.nav.getDir(curr.path)
-		app.nav.checkDir(dir)
-	}
+	// curr := app.nav.currFile()
+	// if curr == nil {
+	// 	return
+	// }
+	//
+	// if curr.path != ui.currentFile {
+	// 	ui.currentFile = curr.path
+	// 	onSelect(app)
+	// }
+	//
+	// if volatile {
+	// 	app.nav.previewChan <- ""
+	// }
+	//
+	// if !gOpts.preview {
+	// 	return
+	// }
+	//
+	// if curr.IsDir() {
+	// 	dir := app.nav.getDir(curr.path)
+	// 	app.nav.checkDir(dir)
+	// }
 }
 
 func (ui *ui) drawPromptLine(nav *nav) {
@@ -1139,7 +1137,7 @@ func (ui *ui) drawPreview(nav *nav, context *dirContext) {
 
 	if gOpts.preview {
 		if curr.isPreviewable() {
-			reg := nav.loadReg2(curr.path)
+			reg := nav.loadReg(curr.path)
 			win.printReg(ui.screen, reg, nav.previewLoading, &ui.sxScreen)
 		} else if curr.IsDir() {
 			ui.sxScreen.lastFile = ""
