@@ -1034,7 +1034,6 @@ func (e *callExpr) eval(app *app, _ []string) {
 		for range e.count {
 			app.nav.cdJumpListNext()
 		}
-		app.ui.loadFile(app, true)
 		restartIncCmd(app)
 		onChdir(app)
 	case "jump-prev":
@@ -1043,7 +1042,6 @@ func (e *callExpr) eval(app *app, _ []string) {
 		for range e.count {
 			app.nav.cdJumpListPrev()
 		}
-		app.ui.loadFile(app, true)
 		restartIncCmd(app)
 		onChdir(app)
 	case "top":
