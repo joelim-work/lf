@@ -472,14 +472,12 @@ func (e *setLocalExpr) eval(app *app, _ []string) {
 		if err == nil {
 			app.nav.sort()
 			app.nav.position()
-			app.ui.loadFile(app, true)
 		}
 	case "hidden", "nohidden", "hidden!":
 		err = applyLocalBoolOpt(gLocalOpts.hidden, gOpts.hidden, e)
 		if err == nil {
 			app.nav.sort()
 			app.nav.position()
-			app.ui.loadFile(app, true)
 		}
 	case "reverse", "noreverse", "reverse!":
 		err = applyLocalBoolOpt(gLocalOpts.reverse, gOpts.reverse, e)
@@ -516,6 +514,8 @@ func (e *setLocalExpr) eval(app *app, _ []string) {
 	if err != nil {
 		app.ui.echoerr(err.Error())
 	}
+
+	app.nav.setLastPath(app)
 }
 
 func (e *mapExpr) eval(app *app, _ []string) {
