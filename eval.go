@@ -809,7 +809,6 @@ func insert(app *app, arg string) {
 				return
 			}
 			app.nav.unselect()
-			app.ui.loadFile(app, true)
 		}
 	case strings.HasPrefix(app.ui.cmdPrefix, "replace"):
 		normal(app)
@@ -821,14 +820,12 @@ func insert(app *app, arg string) {
 			}
 			if gSingleMode {
 				app.nav.renew()
-				app.ui.loadFile(app, true)
 			} else {
 				if _, err := remote("send load"); err != nil {
 					app.ui.echoerrf("rename: %s", err)
 					return
 				}
 			}
-			app.ui.loadFile(app, true)
 		}
 	case strings.HasPrefix(app.ui.cmdPrefix, "create"):
 		normal(app)
@@ -844,14 +841,12 @@ func insert(app *app, arg string) {
 			}
 			if gSingleMode {
 				app.nav.renew()
-				app.ui.loadFile(app, true)
 			} else {
 				if _, err := remote("send load"); err != nil {
 					app.ui.echoerrf("rename: %s", err)
 					return
 				}
 			}
-			app.ui.loadFile(app, true)
 		}
 	case app.ui.cmdPrefix == "mark-save: ":
 		normal(app)
@@ -1230,7 +1225,6 @@ func (e *callExpr) eval(app *app, _ []string) {
 			app.nav.unselect()
 			if gSingleMode {
 				app.nav.renew()
-				app.ui.loadFile(app, true)
 			} else {
 				if _, err := remote("send load"); err != nil {
 					app.ui.echoerrf("delete: %s", err)
@@ -1259,7 +1253,6 @@ func (e *callExpr) eval(app *app, _ []string) {
 			cmd.eval(app, e.args)
 			if gSingleMode {
 				app.nav.renew()
-				app.ui.loadFile(app, true)
 			} else {
 				if _, err := remote("send load"); err != nil {
 					app.ui.echoerrf("rename: %s", err)
