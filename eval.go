@@ -323,7 +323,6 @@ func (e *setExpr) eval(app *app, _ []string) {
 		gOpts.ratios = rats
 		app.ui.wins = getWins(app.ui.screen)
 		app.nav.resize(app.ui)
-		app.ui.loadFile(app, true)
 	case "rulerfmt":
 		gOpts.rulerfmt = e.val
 	case "scrolloff":
