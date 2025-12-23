@@ -1712,40 +1712,44 @@ func (nav *nav) findSingle() int {
 	return count
 }
 
-func (nav *nav) findNext() (bool, bool) {
+func (nav *nav) findNext() bool {
 	dir := nav.currDir()
 	for i := dir.ind + 1; i < len(dir.files); i++ {
 		if findMatch(dir.files[i].Name(), nav.find) {
-			return nav.down(i - dir.ind), true
+			nav.down(i - dir.ind)
+			return true
 		}
 	}
 	if gOpts.wrapscan {
 		for i := range dir.ind {
 			if findMatch(dir.files[i].Name(), nav.find) {
 				dir.visualWrap++
-				return nav.up(dir.ind - i), true
+				nav.up(dir.ind - i)
+				return true
 			}
 		}
 	}
-	return false, false
+	return false
 }
 
-func (nav *nav) findPrev() (bool, bool) {
+func (nav *nav) findPrev() bool {
 	dir := nav.currDir()
 	for i := dir.ind - 1; i >= 0; i-- {
 		if findMatch(dir.files[i].Name(), nav.find) {
-			return nav.up(dir.ind - i), true
+			nav.up(dir.ind - i)
+			return true
 		}
 	}
 	if gOpts.wrapscan {
 		for i := len(dir.files) - 1; i > dir.ind; i-- {
 			if findMatch(dir.files[i].Name(), nav.find) {
 				dir.visualWrap--
-				return nav.down(i - dir.ind), true
+				nav.down(i - dir.ind)
+				return true
 			}
 		}
 	}
-	return false, false
+	return false
 }
 
 func searchMatch(name, pattern string, method searchMethod) (matched bool, err error) {

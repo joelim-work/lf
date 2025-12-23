@@ -748,10 +748,8 @@ func insert(app *app, arg string) {
 				return
 			}
 
-			if moved, found := app.nav.findNext(); !found {
+			if !app.nav.findNext() {
 				app.ui.echoerrf("find: pattern not found: %s", app.nav.find)
-			} else if moved {
-				app.ui.loadFile(app, true)
 			}
 		}
 
@@ -775,10 +773,8 @@ func insert(app *app, arg string) {
 				return
 			}
 
-			if moved, found := app.nav.findPrev(); !found {
+			if !app.nav.findPrev() {
 				app.ui.echoerrf("find-back: pattern not found: %s", app.nav.find)
-			} else if moved {
-				app.ui.loadFile(app, true)
 			}
 		}
 
@@ -1699,17 +1695,13 @@ func (e *callExpr) eval(app *app, _ []string) {
 			}
 		case "find: ":
 			app.ui.cmdPrefix = ""
-			if moved, found := app.nav.findNext(); !found {
+			if !app.nav.findNext() {
 				app.ui.echoerrf("find: pattern not found: %s", app.nav.find)
-			} else if moved {
-				app.ui.loadFile(app, true)
 			}
 		case "find-back: ":
 			app.ui.cmdPrefix = ""
-			if moved, found := app.nav.findPrev(); !found {
+			if !app.nav.findPrev() {
 				app.ui.echoerrf("find-back: pattern not found: %s", app.nav.find)
-			} else if moved {
-				app.ui.loadFile(app, true)
 			}
 		case "rename: ":
 			app.ui.cmdPrefix = ""
