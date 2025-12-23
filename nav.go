@@ -1192,26 +1192,16 @@ func (nav *nav) open() error {
 	return nil
 }
 
-func (nav *nav) top() bool {
+func (nav *nav) top() {
 	dir := nav.currDir()
-
-	old := dir.ind
-
 	dir.ind = 0
 	dir.pos = 0
-
-	return old != dir.ind
 }
 
-func (nav *nav) bottom() bool {
+func (nav *nav) bottom() {
 	dir := nav.currDir()
-
-	old := dir.ind
-
 	dir.ind = max(len(dir.files)-1, 0)
 	dir.pos = min(dir.ind, nav.height-1)
-
-	return old != dir.ind
 }
 
 func (nav *nav) high() bool {
@@ -1268,16 +1258,14 @@ func (nav *nav) low() bool {
 	return old != dir.ind
 }
 
-func (nav *nav) move(index int) bool {
+func (nav *nav) move(index int) {
 	old := nav.currDir().ind
 
 	switch {
 	case index < old:
-		return nav.up(old - index)
+		nav.up(old - index)
 	case index > old:
-		return nav.down(index - old)
-	default:
-		return false
+		nav.down(index - old)
 	}
 }
 
