@@ -1697,7 +1697,6 @@ func (e *callExpr) eval(app *app, _ []string) {
 			if err := app.nav.setFilter(strings.Split(s, " ")); err != nil {
 				app.ui.echoerrf("filter: %s", err)
 			}
-			app.ui.loadFile(app, true)
 		case "find: ":
 			app.ui.cmdPrefix = ""
 			if moved, found := app.nav.findNext(); !found {
