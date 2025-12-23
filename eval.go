@@ -999,7 +999,6 @@ func (e *callExpr) eval(app *app, _ []string) {
 				return
 			}
 		}
-		app.ui.loadFile(app, true)
 		restartIncCmd(app)
 		onChdir(app)
 	case "open":
@@ -1016,7 +1015,6 @@ func (e *callExpr) eval(app *app, _ []string) {
 				app.ui.echoerrf("opening directory: %s", err)
 				return
 			}
-			app.ui.loadFile(app, true)
 			restartIncCmd(app)
 			onChdir(app)
 		} else {
