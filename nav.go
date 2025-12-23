@@ -1250,13 +1250,13 @@ func (nav *nav) low() {
 }
 
 func (nav *nav) move(index int) {
-	old := nav.currDir().ind
+	dir := nav.currDir()
 
 	switch {
-	case index < old:
-		nav.up(old - index)
-	case index > old:
-		nav.down(index - old)
+	case index < dir.ind:
+		nav.up(dir.ind - index)
+	case index > dir.ind:
+		nav.down(index - dir.ind)
 	}
 }
 
