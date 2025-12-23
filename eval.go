@@ -79,7 +79,6 @@ func (e *setExpr) eval(app *app, _ []string) {
 		if err == nil {
 			app.nav.sort()
 			app.nav.position()
-			app.ui.loadFile(app, true)
 		}
 	case "dirpreviews", "nodirpreviews", "dirpreviews!":
 		err = applyBoolOpt(&gOpts.dirpreviews, e)
@@ -447,6 +446,8 @@ func (e *setExpr) eval(app *app, _ []string) {
 	if err != nil {
 		app.ui.echoerr(err.Error())
 	}
+
+	app.nav.setLastPath(app)
 }
 
 func (e *setLocalExpr) eval(app *app, _ []string) {
