@@ -1150,7 +1150,6 @@ func (e *callExpr) eval(app *app, _ []string) {
 			app.ui.echoerrf("paste: %s", err)
 			return
 		}
-		app.ui.loadFile(app, true)
 	case "clear":
 		if err := saveFiles(clipboard{nil, clipboardCut}); err != nil {
 			app.ui.echoerrf("clear: %s", err)
