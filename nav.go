@@ -497,6 +497,7 @@ type nav struct {
 	preloadTimer    *time.Timer
 	jumpList        []string
 	jumpListInd     int
+	lastPath        string
 }
 
 func (nav *nav) getDir(path string) *dir {
@@ -660,6 +661,28 @@ func (nav *nav) cdJumpListNext() {
 			log.Print(err)
 		}
 	}
+}
+
+func (nav *nav) setLastPath(app *app) {
+	curr := nav.currFile()
+	if curr == nil || curr.path == nav.lastPath {
+		return
+	}
+
+	if curr.isPreviewable() {
+		nav.checkReg(curr.path)
+	} else if curr.IsDir() {
+		dir := nav.getDir(curr.path)
+		nav.checkDir(dir)
+	}
+
+	nav.preload()
+
+	onSelect(app)
+
+	// TODO: REMOVE TEST CODE
+	log.Printf("setlastpath [%s] => [%s]", nav.lastPath, curr.path)
+	nav.lastPath = curr.path
 }
 
 func (nav *nav) renew() {

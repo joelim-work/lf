@@ -387,11 +387,6 @@ func (app *app) loop() {
 			}
 			app.ui.draw(app.nav)
 		case d := <-app.nav.dirChan:
-			var oldCurrPath string
-			if curr := app.nav.currFile(); curr != nil {
-				oldCurrPath = curr.path
-			}
-
 			prev, ok := app.nav.dirCache[d.path]
 			if ok {
 				d.ind = prev.ind
@@ -406,11 +401,7 @@ func (app *app) loop() {
 
 			app.nav.position()
 
-			if curr := app.nav.currFile(); curr != nil {
-				if curr.path != oldCurrPath {
-					app.ui.loadFile(app, true)
-				}
-			}
+			app.nav.setLastPath(app)
 
 			app.watchDir(d)
 

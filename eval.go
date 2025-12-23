@@ -988,11 +988,6 @@ func (e *callExpr) eval(app *app, _ []string) {
 		app.ui.echo("")
 	}
 
-	var oldPath string
-	if curr := app.nav.currFile(); curr != nil {
-		oldPath = curr.path
-	}
-
 	switch e.name {
 	case "quit":
 		app.quitChan <- struct{}{}
@@ -2111,16 +2106,7 @@ func (e *callExpr) eval(app *app, _ []string) {
 		cmd.eval(app, e.args)
 	}
 
-	if curr := app.nav.currFile(); curr != nil && curr.path != oldPath {
-		if curr.isPreviewable() {
-			app.nav.checkReg(curr.path)
-		} else if curr.IsDir() {
-			dir := app.nav.getDir(curr.path)
-			app.nav.checkDir(dir)
-		}
-		app.nav.preload()
-		onSelect(app)
-	}
+	app.nav.setLastPath(app)
 }
 
 func (e *execExpr) eval(app *app, args []string) {
