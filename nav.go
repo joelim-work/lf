@@ -1414,8 +1414,7 @@ loop:
 	nav.copyTotalChan <- -total
 
 	if gSingleMode {
-		nav.renew()
-		app.ui.loadFile(app, true)
+		app.ui.exprChan <- &callExpr{"load", nil, 1}
 	} else {
 		if _, err := remote("send load"); err != nil {
 			sendErr("%v", err)
@@ -1520,8 +1519,7 @@ func (nav *nav) moveAsync(app *app, srcs []string, dstDir string) {
 	nav.moveTotalChan <- -len(srcs)
 
 	if gSingleMode {
-		nav.renew()
-		app.ui.loadFile(app, true)
+		app.ui.exprChan <- &callExpr{"load", nil, 1}
 	} else {
 		if _, err := remote("send load"); err != nil {
 			sendErr("%v", err)
@@ -1580,8 +1578,7 @@ func (nav *nav) del(app *app) error {
 		nav.deleteTotalChan <- -len(list)
 
 		if gSingleMode {
-			nav.renew()
-			app.ui.loadFile(app, true)
+			app.ui.exprChan <- &callExpr{"load", nil, 1}
 		} else {
 			if _, err := remote("send load"); err != nil {
 				errCount++
