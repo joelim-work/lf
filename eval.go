@@ -1225,7 +1225,6 @@ func (e *callExpr) eval(app *app, _ []string) {
 		app.nav.renew()
 	case "reload":
 		app.nav.reload()
-		app.ui.loadFile(app, true)
 	case "delete":
 		if cmd, ok := gOpts.cmds["delete"]; ok {
 			cmd.eval(app, e.args)
