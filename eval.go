@@ -737,7 +737,7 @@ func insert(app *app, arg string) {
 			case 0:
 				app.ui.echoerrf("find: pattern not found: %s", app.nav.find)
 			case 1:
-				app.ui.loadFile(app, true)
+				break
 			default:
 				app.ui.cmdAccLeft = append(app.ui.cmdAccLeft, []rune(arg)...)
 				return
@@ -762,7 +762,7 @@ func insert(app *app, arg string) {
 			case 0:
 				app.ui.echoerrf("find-back: pattern not found: %s", app.nav.find)
 			case 1:
-				app.ui.loadFile(app, true)
+				break
 			default:
 				app.ui.cmdAccLeft = append(app.ui.cmdAccLeft, []rune(arg)...)
 				return

@@ -1703,11 +1703,7 @@ func (nav *nav) findSingle() int {
 		}
 	}
 	if count == 1 {
-		if index > dir.ind {
-			nav.down(index - dir.ind)
-		} else {
-			nav.up(dir.ind - index)
-		}
+		nav.move(index)
 	}
 	return count
 }
