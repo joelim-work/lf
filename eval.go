@@ -1063,17 +1063,11 @@ func (e *callExpr) eval(app *app, _ []string) {
 			app.nav.move(e.count - 1)
 		}
 	case "high":
-		if app.nav.high() {
-			app.ui.loadFile(app, true)
-		}
+		app.nav.high()
 	case "middle":
-		if app.nav.middle() {
-			app.ui.loadFile(app, true)
-		}
+		app.nav.middle()
 	case "low":
-		if app.nav.low() {
-			app.ui.loadFile(app, true)
-		}
+		app.nav.low()
 	case "toggle":
 		if len(e.args) == 0 {
 			app.nav.toggle()

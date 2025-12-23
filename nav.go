@@ -1204,10 +1204,9 @@ func (nav *nav) bottom() {
 	dir.pos = min(dir.ind, nav.height-1)
 }
 
-func (nav *nav) high() bool {
+func (nav *nav) high() {
 	dir := nav.currDir()
 
-	old := dir.ind
 	beg := max(dir.ind-dir.pos, 0)
 	offs := min(nav.height/2, gOpts.scrolloff)
 	if beg == 0 {
@@ -1216,28 +1215,22 @@ func (nav *nav) high() bool {
 
 	dir.ind = beg + offs
 	dir.pos = offs
-
-	return old != dir.ind
 }
 
-func (nav *nav) middle() bool {
+func (nav *nav) middle() {
 	dir := nav.currDir()
 
-	old := dir.ind
 	beg := max(dir.ind-dir.pos, 0)
 	end := min(beg+nav.height, len(dir.files))
 
 	half := (end - beg) / 2
 	dir.ind = beg + half
 	dir.pos = half
-
-	return old != dir.ind
 }
 
-func (nav *nav) low() bool {
+func (nav *nav) low() {
 	dir := nav.currDir()
 
-	old := dir.ind
 	beg := max(dir.ind-dir.pos, 0)
 	end := min(beg+nav.height, len(dir.files))
 
@@ -1254,8 +1247,6 @@ func (nav *nav) low() bool {
 
 	dir.ind = end - 1 - offs
 	dir.pos = end - beg - 1 - offs
-
-	return old != dir.ind
 }
 
 func (nav *nav) move(index int) {
