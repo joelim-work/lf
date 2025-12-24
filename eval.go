@@ -136,6 +136,7 @@ func (e *setExpr) eval(app *app, _ []string) {
 		if err == nil {
 			gOpts.preview = preview
 			app.ui.sxScreen.forceClear = true
+			app.nav.previewChan <- ""
 			app.nav.lastPreview = &reg{}
 		}
 	case "relativenumber", "norelativenumber", "relativenumber!":
@@ -1152,6 +1153,7 @@ func (e *callExpr) eval(app *app, _ []string) {
 		app.ui.renew()
 		app.nav.resize(app.ui)
 		app.ui.sxScreen.forceClear = true
+		app.nav.previewChan <- ""
 		app.nav.lastPreview = &reg{}
 		onRedraw(app)
 	case "load":
