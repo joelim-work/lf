@@ -976,7 +976,9 @@ func (nav *nav) loadReg(path string) *reg {
 			nav.previewChan <- ""
 		}
 		if (r.loading && !gOpts.preload) || r.volatile {
-			r.loading = true
+			if !gOpts.preload {
+				r.loading = true
+			}
 			nav.startPreview()
 			nav.previewChan <- path
 		}
