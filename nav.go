@@ -680,8 +680,6 @@ func (nav *nav) setLastPath(app *app) {
 
 	onSelect(app)
 
-	// TODO: REMOVE TEST CODE
-	log.Printf("setlastpath [%s] => [%s]", nav.lastPath, curr.path)
 	nav.lastPath = curr.path
 }
 

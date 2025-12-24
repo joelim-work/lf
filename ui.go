@@ -746,31 +746,6 @@ type reg struct {
 	sixel    bool
 }
 
-func (ui *ui) loadFile(app *app, volatile bool) {
-	// curr := app.nav.currFile()
-	// if curr == nil {
-	// 	return
-	// }
-	//
-	// if curr.path != ui.currentFile {
-	// 	ui.currentFile = curr.path
-	// 	onSelect(app)
-	// }
-	//
-	// if volatile {
-	// 	app.nav.previewChan <- ""
-	// }
-	//
-	// if !gOpts.preview {
-	// 	return
-	// }
-	//
-	// if curr.IsDir() {
-	// 	dir := app.nav.getDir(curr.path)
-	// 	app.nav.checkDir(dir)
-	// }
-}
-
 func (ui *ui) drawPromptLine(nav *nav) {
 	st := tcell.StyleDefault
 
