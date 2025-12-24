@@ -1116,6 +1116,8 @@ func (ui *ui) drawPreview(nav *nav, context *dirContext) {
 			win.printReg(ui.screen, reg, nav.previewLoading, &ui.sxScreen)
 		} else if curr.IsDir() {
 			ui.sxScreen.lastFile = ""
+			nav.previewChan <- ""
+			nav.lastPreview = &reg{}
 			dir := nav.getDir(curr.path)
 			dirStyle := &dirStyle{colors: ui.styles, icons: ui.icons, role: Preview}
 			win.printDir(ui, dir, context, dirStyle)
