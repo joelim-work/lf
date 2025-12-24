@@ -1099,15 +1099,13 @@ func (nav *nav) down(dist int) {
 	dir.boundPos(nav.height)
 }
 
-func (nav *nav) scrollUp(dist int) bool {
+func (nav *nav) scrollUp(dist int) {
 	dir := nav.currDir()
 
 	// when reached top do nothing
 	if istop := dir.ind == dir.pos; istop {
-		return false
+		return
 	}
-
-	old := dir.ind
 
 	minedge := min(nav.height/2, gOpts.scrolloff)
 
@@ -1124,20 +1122,16 @@ func (nav *nav) scrollUp(dist int) bool {
 
 	// prevent cursor disappearing downwards
 	dir.pos = min(dir.pos, nav.height-1)
-
-	return old != dir.ind
 }
 
-func (nav *nav) scrollDown(dist int) bool {
+func (nav *nav) scrollDown(dist int) {
 	dir := nav.currDir()
 	maxind := len(dir.files) - 1
 
 	// reached bottom
 	if dir.ind-dir.pos > maxind-nav.height {
-		return false
+		return
 	}
-
-	old := dir.ind
 
 	minedge := min(nav.height/2, gOpts.scrolloff)
 
@@ -1153,8 +1147,6 @@ func (nav *nav) scrollDown(dist int) bool {
 	dir.ind = min(maxind, dir.ind)
 	// prevent disappearing
 	dir.pos = max(dir.pos, 0)
-
-	return old != dir.ind
 }
 
 func (nav *nav) updir() error {

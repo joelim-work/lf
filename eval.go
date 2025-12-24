@@ -961,9 +961,7 @@ func (e *callExpr) eval(app *app, _ []string) {
 	case "page-up":
 		app.nav.up(e.count * app.nav.height)
 	case "scroll-up":
-		if app.nav.scrollUp(e.count) {
-			app.ui.loadFile(app, true)
-		}
+		app.nav.scrollUp(e.count)
 	case "down":
 		app.nav.down(e.count)
 	case "half-down":
@@ -971,9 +969,7 @@ func (e *callExpr) eval(app *app, _ []string) {
 	case "page-down":
 		app.nav.down(e.count * app.nav.height)
 	case "scroll-down":
-		if app.nav.scrollDown(e.count) {
-			app.ui.loadFile(app, true)
-		}
+		app.nav.scrollDown(e.count)
 	case "updir":
 		resetIncCmd(app)
 		preChdir(app)
